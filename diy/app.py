@@ -9,7 +9,7 @@ import pymongo
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [(r"/(\w+)", WordHandler)]
-        conn = pymongo.Connection("mongodb://$OPENSHIFT_MONGODB_DB_HOST:$OPENSHIFT_MONGODB_DB_PORT/", 27017)
+        conn = pymongo.Connection("$OPENSHIFT_MONGODB_DB_URL")
         self.db_1 = conn.db_1
         self.cl_1 = self.db_1.cl_1
         self.cl_1.insert({"name":"fuck", "def":"have sex with"})
