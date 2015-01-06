@@ -2,14 +2,14 @@ import tornado.ioloop
 import tornado.web
 import tornado.httpserver
 import pymongo
-
+import os
 
 
 
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [(r"/(\w+)", WordHandler)]
-        conn = pymongo.Connection("OPENSHIFT_MONGODB_DB_URL")
+        conn = pymongo.Connection(os.environ['OPENSHIFT_MONGODB_DB_URL'])
         self.db_1 = conn.db_1
         self.cl_1 = self.db_1.cl_1
         self.cl_1.insert({"name":"fuck", "def":"have sex with"})
