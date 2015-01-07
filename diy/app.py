@@ -10,8 +10,8 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [(r"/(\w+)", WordHandler)]
         conn = pymongo.Connection(os.environ['OPENSHIFT_MONGODB_DB_URL'])
-        self.db_1 = conn.db_1
-        self.cl_1 = self.db_1.cl_1
+        self.test3 = conn.test3
+        self.cl_1 = self.test3.cl_1
         self.cl_1.insert({"name":"fuck", "def":"have sex with"})
         tornado.web.Application.__init__(self, handlers)
 
