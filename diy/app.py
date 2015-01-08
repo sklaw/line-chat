@@ -31,6 +31,7 @@ class WordHandler(tornado.web.RequestHandler):
         tmp = ( yield tornado.gen.Task(self.cl_1.find_one, {"name":"fuck"}) )[0][0]
         del tmp["_id"]
         self.write(tmp)
+        self.write(s)
         self.finish()
 
 def call_back():
