@@ -9,7 +9,12 @@ import tornado.gen
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [(r"/.*", WordHandler)]
-        self.test3 = asyncmongo.Client(pool_id="mydb", host=os.environ['OPENSHIFT_MONGODB_DB_HOST'], port=os.environ['OPENSHIFT_MONGODB_DB_PORT'], dbname='test3')
+        self.test3 = asyncmongo.Client(pool_id="mydb",
+                                        host=os.environ['OPENSHIFT_MONGODB_DB_HOST'],
+                                        port=os.environ['OPENSHIFT_MONGODB_DB_PORT'],
+                                        dbname='test3', 
+                                        dbuser=os.environ['OPENSHIFT_MONGODB_DB_USERNAME'], 
+                                        dbpass=os.envrion['OPENSHIFT_MONGODB_DB_PASSWORD'])
         
         
         tornado.web.Application.__init__(self, handlers)
