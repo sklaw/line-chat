@@ -10,6 +10,7 @@ import time
 s = ""
 ioIns = tornado.ioloop.IOLoop.instance()
 
+
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [(r"/.*", WordHandler)]
@@ -34,6 +35,17 @@ class WordHandler(tornado.web.RequestHandler):
         self.write(s)
         self.finish()
 
+
+
+
+
+
+
+
+
+
+
+
 def call_back():
     global s
     global ioIns
@@ -44,14 +56,14 @@ def call_back():
     s += "\n"
     s += str(h)
 
-    tfloat += 10
+    tfloat += 3600
     ioIns.call_at(tfloat, call_back)
 
 def main(address):
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(8080, address)
     tfloat = ioIns.time()
-    tfloat += 10
+    tfloat += 3600
     ioIns.call_at(tfloat, call_back)
     ioIns.start()
 
