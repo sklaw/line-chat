@@ -41,7 +41,7 @@ def call_back():
     tfloat = ioIns.time()
 
     h = time.gmtime(tfloat)
-    s += "<br>"
+    s += "\n"
     s += str(h)
 
     tfloat += 10
