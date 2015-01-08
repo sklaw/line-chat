@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:ts=4:et
-# $Id: xmlrpc_curl.py,v 1.13 2007/03/04 19:26:59 kjetilja Exp $
 
 # We should ignore SIGPIPE when using pycurl.NOSIGNAL - see
 # the libcurl tutorial for more info.
@@ -14,8 +13,15 @@ except ImportError:
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
-import xmlrpclib, pycurl
+    try:
+        from StringIO import StringIO
+    except ImportError:
+        from io import StringIO
+try:
+    import xmlrpclib
+except ImportError:
+    import xmlrpc.client as xmlrpclib
+import pycurl
 
 
 class CURLTransport(xmlrpclib.Transport):
@@ -55,8 +61,8 @@ if __name__ == "__main__":
     ## Test
     server = xmlrpclib.ServerProxy("http://betty.userland.com",
                                    transport=CURLTransport())
-    print server
+    print(server)
     try:
-        print server.examples.getStateName(41)
+        print(server.examples.getStateName(41))
     except xmlrpclib.Error, v:
-        print "ERROR", v
+        print("ERROR", v)
