@@ -11,7 +11,7 @@ class Application(tornado.web.Application):
         handlers = [(r"/.*", WordHandler)]
         self.test3 = asyncmongo.Client(pool_id="mydb",
                                         host=os.environ['OPENSHIFT_MONGODB_DB_HOST'],
-                                        port=os.environ['OPENSHIFT_MONGODB_DB_PORT'],
+                                        port=int(os.environ['OPENSHIFT_MONGODB_DB_PORT']),
                                         dbname='test3', 
                                         dbuser=os.environ['OPENSHIFT_MONGODB_DB_USERNAME'], 
                                         dbpass=os.environ['OPENSHIFT_MONGODB_DB_PASSWORD'])
