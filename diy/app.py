@@ -5,6 +5,10 @@ import pymongo
 import os
 import asyncmongo
 import tornado.gen
+import time
+
+s = ""
+ioIns = tornado.ioloop.IOLoop.instance()
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -15,8 +19,6 @@ class Application(tornado.web.Application):
                                         dbname='test3', 
                                         dbuser=os.environ['OPENSHIFT_MONGODB_DB_USERNAME'], 
                                         dbpass=os.environ['OPENSHIFT_MONGODB_DB_PASSWORD'])
-        
-        
         tornado.web.Application.__init__(self, handlers)
 
 class WordHandler(tornado.web.RequestHandler):
@@ -31,10 +33,26 @@ class WordHandler(tornado.web.RequestHandler):
         self.write(tmp)
         self.finish()
 
+def call_back():
+    global s
+    global ioIns
+
+    tfloat = ioIns.time()
+
+    h = time.gmtime(tfloat)
+    s += "<br>"
+    s += str(h)
+
+    tfloat += 10
+    ioIns.call_at(tfloat, call_back)
+
 def main(address):
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(8080, address)
-    tornado.ioloop.IOLoop.instance().start()
+    tfloat = ioIns.time()
+    tfloat += 10
+    ioIns.call_at(tfloat, call_back)
+    ioIns.start()
 
 if __name__ == "__main__":
     address = "127.0.0.1"
