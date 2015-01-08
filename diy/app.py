@@ -14,7 +14,7 @@ class Application(tornado.web.Application):
                                         port=os.environ['OPENSHIFT_MONGODB_DB_PORT'],
                                         dbname='test3', 
                                         dbuser=os.environ['OPENSHIFT_MONGODB_DB_USERNAME'], 
-                                        dbpass=os.envrion['OPENSHIFT_MONGODB_DB_PASSWORD'])
+                                        dbpass=os.environ['OPENSHIFT_MONGODB_DB_PASSWORD'])
         
         
         tornado.web.Application.__init__(self, handlers)
