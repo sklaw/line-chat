@@ -27,7 +27,7 @@ $(document).ready(function() {
 					websocket.send(JSON.stringify(sendCon));
 					sendCon = []
 					sendYet = true;
-				}
+				})
 			}
 		}
 		if (sendYet) {
