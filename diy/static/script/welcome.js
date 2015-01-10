@@ -9,9 +9,11 @@ $(document).ready(function() {
 	setTimeout(wbstart, 100)
 
 	$("#myCanvas").mousemove(function(event) {
+		var timer4send;
 		$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
 		if (event.which==1)	{
 			sendYet = false;
+			clearTimeout(timer4send);
   			$("#ispress").html("yes")
   			oldx = event.offsetX
   			oldy = event.offsetY
@@ -20,10 +22,12 @@ $(document).ready(function() {
 		else {
 			$("#ispress").html("no")
 			if (sendYet == false) {
-				console.log(JSON.stringify(sendCon))
-				websocket.send(JSON.stringify(sendCon));
-				sendCon = []
-				sendYet = true;
+				timer4send = setTimeout(function() {
+					console.log(JSON.stringify(sendCon))
+					websocket.send(JSON.stringify(sendCon));
+					sendCon = []
+					sendYet = true;
+				}
 			}
 		}
 		if (sendYet) {
