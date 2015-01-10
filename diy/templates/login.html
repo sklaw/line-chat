@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>login</title>
+	<link href="{{static_url("css/login.css")}}" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="{{static_url("script/jquery-2.1.3.min.js")}}"></script>
+	<script type="text/javascript" src="{{static_url("script/login.js")}}"></script>
+</head>
+<body>
+	<p>login.html</p>
+	<input type="radio" name="option" id="login" checked>
+    <label for="login">登录</label>
+    <input type="radio" name="option" id="signup">
+    <label for="signup" >注册</label>
+    <div>
+        <label for="name" >用户名: </label>
+        <input type="text" name="name" id="name">
+    </div>
+    <div>
+        <label for="password">密码: </label>
+        <input type="password" name="password" id="password">
+    </div>
+    <div>
+        <button id="summit">确认</button>
+    </div>
+    <div id="result"></div>
+    
+    
+
+</body>
+
+</html>

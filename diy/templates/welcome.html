@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>welcome</title>
+	<link href="{{static_url("css/welcome.css")}}" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="{{static_url("script/jquery-2.1.3.min.js")}}"></script>
+	<script type="text/javascript" src="{{static_url("script/welcome.js")}}"></script>
+</head>
+<body>
+	<p id="name">{{name}}</p>
+	<form action="/logout" method="get">
+		<input type="submit" value="log out">
+	</form>
+	<canvas id="myCanvas" width="1000" height="400" style="border:1px solid black;">
+		Your browser does not support the HTML5 canvas tag.
+	</canvas>
+	<p id="cord"></p>
+	<p id="ispress"></p>
+	<p id="result"></p>
+</body>
+
+</html>
