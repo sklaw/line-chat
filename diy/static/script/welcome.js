@@ -22,6 +22,7 @@ $(document).ready(function() {
 		else {
 			$("#ispress").html("no")
 			if (sendYet == false) {
+				clearTimeout(timer4send);
 				timer4send = setTimeout(function() {
 					console.log(JSON.stringify(sendCon))
 					websocket.send(JSON.stringify(sendCon));
