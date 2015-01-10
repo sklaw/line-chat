@@ -86,8 +86,8 @@ class Application(tornado.web.Application):
         
         settings = {
             'debug' : True,
-            'template_path' : 'templates',
-            'static_path' : 'static',
+            'template_path' : os.path.dirname(os.path.realpath(__file__))+'/templates',
+            'static_path' : os.path.dirname(os.path.realpath(__file__))+'/static',
             'cookie_secret' : base64.b64encode(uuid.uuid4().bytes+uuid.uuid4().bytes),
             'login_url' : '/login'
         }
