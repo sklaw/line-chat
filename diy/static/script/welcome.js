@@ -41,7 +41,7 @@ function draw(event) {
 }
 
 function wbstart() {
-	var host = "wss://test3-sklaw.rhcloud.com:8443";
+	var host = "wss://test3-sklaw.rhcloud.com:8443/share";
 	websocket = new WebSocket(host);
 	websocket.onopen = function (evt) {
 		$("#result").html("wb opened.")
@@ -53,4 +53,5 @@ function wbstart() {
 		ctx.lineTo(data['newx'],data['newy']);
 		ctx.stroke();
 	}
+	websocket.onclose = function
 }
