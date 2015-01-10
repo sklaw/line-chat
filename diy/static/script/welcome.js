@@ -5,6 +5,7 @@ var c
 var ctx
 var sendYet = true
 var sendCon = []
+var timerSend;
 $(document).ready(function() {
 	setTimeout(wbstart, 100)
 
@@ -12,19 +13,19 @@ $(document).ready(function() {
 		var timer4send;
 		$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
 		if (event.which==1)	{
+			clearTimeout(timerSend)
 			sendYet = false;
-			clearTimeout(timer4send);
   			$("#ispress").html("yes")
   			oldx = event.offsetX
   			oldy = event.offsetY
-  			setTimeout(draw, 100, event);
+  			setTimeout(draw, 100, event)
 		}
 		else {
 			$("#ispress").html("no")
 			if (sendYet == false) {
-				clearTimeout(timer4send);
-				timer4send = setTimeout(function() {
-					console.log(JSON.stringify(sendCon))
+				clearTimeout(timerSend)
+				timerSend = setTimeout(function() {
+					console.log('gonna shot.')
 					websocket.send(JSON.stringify(sendCon));
 					sendCon = []
 				}, 1000)
