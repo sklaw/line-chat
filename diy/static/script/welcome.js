@@ -26,8 +26,8 @@ $(document).ready(function() {
 					console.log(JSON.stringify(sendCon))
 					websocket.send(JSON.stringify(sendCon));
 					sendCon = []
-					sendYet = true;
 				}, 1000)
+				sendYet = true;
 			}
 		}
 		if (sendYet) {
