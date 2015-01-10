@@ -41,7 +41,7 @@ function draw(event) {
 }
 
 function wbstart() {
-	var host = "ws://test3-sklaw.rhcloud.com:8000";
+	var host = "wss://test3-sklaw.rhcloud.com:8443";
 	websocket = new WebSocket(host);
 	websocket.onopen = function (evt) {
 		$("#result").html("wb opened.")
