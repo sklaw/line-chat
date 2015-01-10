@@ -94,6 +94,9 @@ class Application(tornado.web.Application):
         tornado.web.Application.__init__(self, handlers, **settings)
 
 class ShareHandler(tornado.websocket.WebSocketHandler):
+    def check_origin(self, origin):
+        return True
+
     def open(self):
         online.append(self.callback)
         print 'someone comes to play!'
