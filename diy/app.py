@@ -47,6 +47,7 @@ class SignupHandler(BaseHandler):
 class LoginHandler(BaseHandler):
     def get(self):
         self.render('login.html')
+        print "login.html"
 
     @tornado.web.asynchronous
     @tornado.gen.engine
