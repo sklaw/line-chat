@@ -53,5 +53,7 @@ function wbstart() {
 		ctx.lineTo(data['newx'],data['newy']);
 		ctx.stroke();
 	}
-	websocket.onclose = function
+	websocket.onerror = function(evt) {
+		consoloe.log('web on error')
+	}
 }
