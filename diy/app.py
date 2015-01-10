@@ -47,7 +47,7 @@ class SignupHandler(BaseHandler):
 class LoginHandler(BaseHandler):
     def get(self):
         self.render('login.html')
-        print "login.html"
+        #print "login.html"
 
     @tornado.web.asynchronous
     @tornado.gen.engine
@@ -106,7 +106,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         print 'someone leaved'
 
     def on_message(self, info):
-        print info
+        #print info
         for i in online:
             if (i != self.callback):
                 i(info)

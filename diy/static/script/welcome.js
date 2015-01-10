@@ -65,11 +65,17 @@ function wbstart() {
 	websocket.onmessage = function(evt) {
 		$("#result").html("wb onmessage.")
 		data = $.parseJSON(evt.data)
-		for (var i = 0; i < data.length; i++) {
+		var i = 0;
+		timer = setInterval(function() {
+			if (i >= data.length) {
+				clearInterval(timer)
+				return
+			}
 			ctx.moveTo(data[i]['oldx'],data[i]['oldy']);
 			ctx.lineTo(data[i]['newx'],data[i]['newy']);
 			ctx.stroke();
-		}
+			i++;
+		}, 10)
 	}
 	websocket.onerror = function(evt) {
 		console.log('web on error')
