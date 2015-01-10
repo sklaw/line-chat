@@ -103,12 +103,12 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         print 'someone leaved'
 
     def on_message(self, info):
+        print info
         for i in online:
             if (i != self.callback):
                 i(info)
 
     def callback(self, info):
-        print info
         self.write_message(info)
     
 

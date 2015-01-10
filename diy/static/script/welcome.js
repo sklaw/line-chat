@@ -3,12 +3,15 @@ var oldy = null;
 var websocket = null;
 var c
 var ctx
+var sendYet = true
+var sendCon = []
 $(document).ready(function() {
 	setTimeout(wbstart, 100)
 
 	$("#myCanvas").mousemove(function(event) {
 		$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
 		if (event.which==1)	{
+			sendYet = false;
   			$("#ispress").html("yes")
   			oldx = event.offsetX
   			oldy = event.offsetY
@@ -16,7 +19,18 @@ $(document).ready(function() {
 		}
 		else {
 			$("#ispress").html("no")
-			
+			if (sendYet == false) {
+				console.log(JSON.stringify(sendCon))
+				websocket.send(JSON.stringify(sendCon));
+				sendCon = []
+				sendYet = true;
+			}
+		}
+		if (sendYet) {
+			$("#sendYet").html("sendYet")
+		}
+		else {
+			$("#sendYet").html("wait to send")
 		}
 	})
 	c = document.getElementById("myCanvas");
@@ -30,12 +44,14 @@ function draw(event) {
 	newy = event.offsetY
 	ctx.lineTo(newx,newy);
 	ctx.stroke();
-	websocket.send(JSON.stringify({
-  					oldx: oldx,
-  					oldy: oldy,
-  					newx: newx,
-  					newy: newy
-	}));
+
+	var obj = {}
+	obj["oldx"] = oldx;
+	obj["oldy"] = oldy;
+	obj["newx"] = newx;
+	obj["newy"] = newy;
+	sendCon.push(obj)
+	
 	oldx = newx
   	oldy = newy
 }
@@ -49,11 +65,13 @@ function wbstart() {
 	websocket.onmessage = function(evt) {
 		$("#result").html("wb onmessage.")
 		data = $.parseJSON(evt.data)
-		ctx.moveTo(data['oldx'],data['oldy']);
-		ctx.lineTo(data['newx'],data['newy']);
-		ctx.stroke();
+		for (var i = 0; i < data.length; i++) {
+			ctx.moveTo(data[i]['oldx'],data[i]['oldy']);
+			ctx.lineTo(data[i]['newx'],data[i]['newy']);
+			ctx.stroke();
+		}
 	}
 	websocket.onerror = function(evt) {
-		consoloe.log('web on error')
+		console.log('web on error')
 	}
 }
