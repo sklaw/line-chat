@@ -17,7 +17,7 @@ $(document).ready(function() {
   			$("#ispress").html("yes")
   			oldx = event.offsetX
   			oldy = event.offsetY
-  			setTimeout(draw, 100, event)
+  			draw(event)
 		}
 		else {
 			$("#ispress").html("no")
