@@ -19,7 +19,7 @@ $(document).ready(function() {
 		});
 	})
 	$('#myCanvas').mousedown(function(){
-		$("message").html("mousedown")
+		$("#message").html("mousedown")
     	clicking = true;
     	clearTimeout(timerSend)
     	sendYet = false;
@@ -29,7 +29,7 @@ $(document).ready(function() {
 	});
 
 	$("#myCanvas").mouseup(function(){
-		$("message").html("mouseup")
+		$("#message").html("mouseup")
     	clicking = false;
     	$("#ispress").html("no")
 		clearTimeout(timerSend)
@@ -45,7 +45,7 @@ $(document).ready(function() {
 	})
 
 	$("#myCanvas").mousemove(function(event) {
-		$("message").html("mousemove")
+		$("#message").html("mousemove")
 		
 		if (clicking)	{
 			
@@ -66,7 +66,7 @@ $(document).ready(function() {
 	})
 
 	$('#myCanvas').on({ 'touchmove' : function(e){ /* do something... */ 
-		$("message").html("touchmove")
+		$("#message").html("touchmove")
 		e.preventDefault();
       	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
       	var elm = $(this).offset();
@@ -92,7 +92,7 @@ $(document).ready(function() {
 	} });
 
 	$('#myCanvas').on({ 'touchend' : function(e){ /* do something... */ 
-		$("message").html("touchend")
+		$("#message").html("touchend")
 		clearTimeout(timerSend)
 		timerSend = setTimeout(function() {
 			console.log('gonna shot.')
