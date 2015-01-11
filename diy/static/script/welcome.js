@@ -72,7 +72,7 @@ $(document).ready(function() {
 	$('#myCanvas').on({ 'touchmove' : function(e){ /* do something... */ 
 		$("#message").html("touchmove")
 		e.preventDefault();
-      	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+      	var touch = ;
       	var elm = $(this).offset();
       	var x = touch.pageX - elm.left;
       	var y = touch.pageY - elm.top;
@@ -83,7 +83,7 @@ $(document).ready(function() {
           		t1 = touch.pageX
           		oldx = x
   				oldy = y
-          		setTimeout(draw, 100, touch)
+          		setTimeout(draw, 100, e.originalEvent.touches[0] || e.originalEvent.changedTouches[0])
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
           	}
