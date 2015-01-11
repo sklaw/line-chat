@@ -79,7 +79,7 @@ $(document).ready(function() {
           		var event = {};
           		event.offsetX = x
           		event.offsetY = y
-          		$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
+          		
           		oldx = event.offsetX
   				oldy = event.offsetY
           		setTimeout(draw, 100, event)
@@ -120,6 +120,7 @@ function draw(event) {
 	var elm = $(event.target).offset();
   	event.offsetX = event.pageX-elm.left;
   	event.offsetY = event.pageY-elm.top;
+  	$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
 	newx = event.offsetX
 	newy = event.offsetY
 	ctx.lineTo(newx,newy);
