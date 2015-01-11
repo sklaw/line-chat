@@ -8,6 +8,10 @@ var sendCon = []
 var timerSend;
 var clicking = false;
 var lineAmount = 0;
+
+var t1 = 0;
+var t2 = 0;
+
 $(document).ready(function() {
 	setTimeout(wbstart, 100)
 	$("p").each(function() {
@@ -76,7 +80,7 @@ $(document).ready(function() {
       	if(x < $(this).width() && x > 0){
           	if(y < $(this).height() && y > 0){
           		clearTimeout(timerSend)
-          		
+          		t1 = touch.pageX
           		oldx = x
   				oldy = y
           		setTimeout(draw, 100, touch)
@@ -120,13 +124,10 @@ function draw(event) {
 
 	newx = offsetX
 	newy = offsetY
-	if (oldx == newx) {
-		$("#cord").html("fuck")
-	}
-	else {
-		$("#cord").html("aaaa")
-	}
+	t2 = event.pageX
 	
+	$("#cord").html(t1.toString()+','+t2.toString())
+		
 	ctx.lineTo(newx,newy);
 	ctx.stroke();
 	
