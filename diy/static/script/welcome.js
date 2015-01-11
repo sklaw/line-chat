@@ -46,11 +46,34 @@ $(document).ready(function() {
       	var elm = $(this).offset();
       	var x = touch.pageX - elm.left;
       	var y = touch.pageY - elm.top;
-      	$("#cord").html(x.toString() + ", " + y.toString())
+      	
+      	if(x < $(this).width() && x > 0){
+          	if(y < $(this).height() && y > 0){
+          		clearTimeout(timerSend)
+          		var event = {};
+          		event.offsetX = x
+          		event.offsetY = y
+          		$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
+          		oldx = event.offsetX
+  				oldy = event.offsetY
+          		setTimeout(draw, 100, event)
+                //CODE GOES HERE
+                //console.log(touch.pageY+' '+touch.pageX);
+          	}
+      	}
       	//console.log(touch.pageY+' '+touch.pageX);
 
 	} });
 
+	$('#myCanvas').on({ 'touchend' : function(e){ /* do something... */ 
+		clearTimeout(timerSend)
+		timerSend = setTimeout(function() {
+			console.log('gonna shot.')
+			websocket.send(JSON.stringify(sendCon));
+			sendCon = []
+		}, 1000)
+      	//console.log(touch.pageY+' '+touch.pageX);
+	} });
 
 	c = document.getElementById("myCanvas");
 	ctx = c.getContext("2d");
