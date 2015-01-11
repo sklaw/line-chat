@@ -85,7 +85,8 @@ class LoginHandler(BaseHandler):
 
 class LogoutHandler(BaseHandler):
     def get(self):
-        online.remove(self.get_secure_cookie("username"))
+        if self.get_secure_cookie("username") in online:
+            online.remove(self.get_secure_cookie("username"))
         self.clear_cookie("username")
         self.redirect('/')
 
@@ -125,8 +126,10 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         print 'someone comes to play!'
 
     def on_close(self):
-        publicPaint.remove(self.callback)
-        online.remove(self.doc['name'])
+        if self.callback in publicPaint:
+            publicPaint.remove(self.callback)
+        if self.doc['name'] in online:
+            online.remove(self.doc['name'])
         print 'someone leaved'
 
     @tornado.web.asynchronous
