@@ -43,7 +43,10 @@ $(document).ready(function() {
 	$('#myCanvas').on({ 'touchmove' : function(e){ /* do something... */ 
 		e.preventDefault();
       	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-      	$("#cord").html(touch.offsetX.toString() + ", " + touch.offsetY.toString())
+      	var elm = $(this).offset();
+      	var x = touch.pageX - elm.left;
+      	var y = touch.pageY - elm.top;
+      	$("#cord").html(x.toString() + ", " + y.toString())
       	//console.log(touch.pageY+' '+touch.pageX);
 
 	} });
