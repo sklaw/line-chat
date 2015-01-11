@@ -52,10 +52,10 @@ $(document).ready(function() {
 			
   			
   			var elm = $(this).offset();
-  			event.offsetX = event.pageX-elm.left;
-  			event.offsetY = event.pageY-elm.top;
-  			oldx = event.offsetX
-  			oldy = event.offsetY
+  			offsetX = event.pageX-elm.left;
+  			offsetY = event.pageY-elm.top;
+  			oldx = offsetX
+  			oldy = offsetY
   			//$("#cord").html(oldx.toString() + ", " + oldy.toString())
   			setTimeout(draw, 100, event)
 
@@ -76,11 +76,9 @@ $(document).ready(function() {
       	if(x < $(this).width() && x > 0){
           	if(y < $(this).height() && y > 0){
           		clearTimeout(timerSend)
-          		touch.offsetX = x
-          		touch.offsetY = y
           		
-          		oldx = touch.offsetX
-  				oldy = touch.offsetY
+          		oldx = x
+  				oldy = y
           		setTimeout(draw, 100, touch)
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
@@ -117,11 +115,11 @@ $(document).ready(function() {
 function draw(event) {
 	ctx.moveTo(oldx,oldy);
 	var elm = $(event.target).offset();
-  	event.offsetX = event.pageX-elm.left;
-  	event.offsetY = event.pageY-elm.top;
+  	offsetX = event.pageX-elm.left;
+  	offsetY = event.pageY-elm.top;
 
-	newx = event.offsetX
-	newy = event.offsetY
+	newx = offsetX
+	newy = offsetY
 	if (oldx == newx) {
 		$("#cord").html("fuck")
 	}
