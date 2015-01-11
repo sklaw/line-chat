@@ -123,6 +123,9 @@ function draw(event) {
 	if (oldx == newx) {
 		$("#cord").html("fuck")
 	}
+	else {
+		$("#cord").html("aaaa")
+	}
 	
 	ctx.lineTo(newx,newy);
 	ctx.stroke();
