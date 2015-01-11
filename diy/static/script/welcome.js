@@ -82,7 +82,7 @@ $(document).ready(function() {
           	if(y < $(this).height() && y > 0){
           		
           		oldx = x
-  				oldy = x
+  				oldy = y
           		setTimeout(draw, 100, x, y)
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
