@@ -4,7 +4,7 @@ var websocket = null;
 var c
 var ctx
 var sendCon = []
-var lines = []
+
 var timerSend;
 var clicking = false;
 var lineAmount = 0;
@@ -35,7 +35,7 @@ $(document).ready(function() {
 		clearTimeout(timerSend)
 		timerSend = setTimeout(function() {
 			console.log('gonna shot.')
-			//sendCon.push("lines")
+			
 			websocket.send(JSON.stringify({data:sendCon, type:"lines"}));
 			sendCon = []
 			$("#sendYet").html("sendYet")
@@ -119,12 +119,12 @@ function draw(event) {
 	var elm = $(event.target).offset();
   	event.offsetX = event.pageX-elm.left;
   	event.offsetY = event.pageY-elm.top;
-  	$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
+  	$("#cord").html(oldx.toString() + ", " + oldy.toString())
 	newx = event.offsetX
 	newy = event.offsetY
 	ctx.lineTo(newx,newy);
 	ctx.stroke();
-	lines.push([oldx, oldy, newx, newy])
+	
 	lineAmount++;
 	$("#lineAmount").html(lineAmount.toString())
 	var obj = {}
@@ -184,7 +184,7 @@ function linesHandler(data) {
 		ctx.lineTo(data[i]['newx'],data[i]['newy']);
 		ctx.strokeStyle = 'black';
 		ctx.stroke();
-		lines.push([data[i]['oldx'], data[i]['oldy'], data[i]['newx'], data[i]['newy']])
+		
 		//lineAmount++;
 		//$("#lineAmount").html(lineAmount.toString())
 		i++;
@@ -196,7 +196,7 @@ function clearLines() {
 	var i = 255;
 	var t = setInterval(function () {
 		if (i < 0) {
-			lines = []
+			
 			clearInterval(t)
 			ctx.beginPath();
 				
