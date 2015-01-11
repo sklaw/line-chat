@@ -119,7 +119,7 @@ function draw(event) {
 	var elm = $(event.target).offset();
   	event.offsetX = event.pageX-elm.left;
   	event.offsetY = event.pageY-elm.top;
-  	//$("#cord").html(event.pageX.toString() + ", " + event.pageY.toString())
+  	$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
 	newx = event.offsetX
 	newy = event.offsetY
 	ctx.lineTo(newx,newy);
