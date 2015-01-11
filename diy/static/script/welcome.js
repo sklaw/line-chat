@@ -119,10 +119,13 @@ function draw(event) {
 	var elm = $(event.target).offset();
   	event.offsetX = event.pageX-elm.left;
   	event.offsetY = event.pageY-elm.top;
-  	$("#cord").html(oldx.toString() + ", " + oldy.toString())
+
 	newx = event.offsetX
 	newy = event.offsetY
-	$("#cord").html(oldx.toString() + ", " + newx.toString())
+	if (oldx == newx) {
+		$("#cord").html("fuck")
+	}
+	
 	ctx.lineTo(newx,newy);
 	ctx.stroke();
 	
