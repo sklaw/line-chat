@@ -76,13 +76,12 @@ $(document).ready(function() {
       	if(x < $(this).width() && x > 0){
           	if(y < $(this).height() && y > 0){
           		clearTimeout(timerSend)
-          		var event = {};
-          		event.offsetX = x
-          		event.offsetY = y
+          		touch.offsetX = x
+          		touch.offsetY = y
           		
-          		oldx = event.offsetX
-  				oldy = event.offsetY
-          		setTimeout(draw, 100, event)
+          		oldx = touch.offsetX
+  				oldy = touch.offsetY
+          		setTimeout(draw, 100, touch)
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
           	}
@@ -120,7 +119,7 @@ function draw(event) {
 	var elm = $(event.target).offset();
   	event.offsetX = event.pageX-elm.left;
   	event.offsetY = event.pageY-elm.top;
-  	$("#cord").html(event.pageX.toString() + ", " + event.pageY.toString())
+  	//$("#cord").html(event.pageX.toString() + ", " + event.pageY.toString())
 	newx = event.offsetX
 	newy = event.offsetY
 	ctx.lineTo(newx,newy);
