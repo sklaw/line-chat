@@ -39,6 +39,16 @@ $(document).ready(function() {
 			$("#sendYet").html("wait to send")
 		}
 	})
+
+	$('#myCanvas').on({ 'touchmove' : function(e){ /* do something... */ 
+		e.preventDefault();
+      	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+      	$("#cord").html(touch.offsetX.toString() + ", " + touch.offsetY.toString())
+      	//console.log(touch.pageY+' '+touch.pageX);
+
+	} });
+
+
 	c = document.getElementById("myCanvas");
 	ctx = c.getContext("2d");
 
@@ -70,8 +80,9 @@ function wbstart() {
 	}
 	websocket.onmessage = function(evt) {
 		$("#result").html("wb onmessage.")
-		data = $.parseJSON(evt.data)
+		var data = $.parseJSON(evt.data)
 		var i = 0;
+		ctx.strokeStyle = 'black';
 		timer = setInterval(function() {
 			if (i >= data.length) {
 				clearInterval(timer)
@@ -79,9 +90,24 @@ function wbstart() {
 			}
 			ctx.moveTo(data[i]['oldx'],data[i]['oldy']);
 			ctx.lineTo(data[i]['newx'],data[i]['newy']);
+			ctx.strokeStyle = 'black';
 			ctx.stroke();
 			i++;
 		}, 10)
+		setTimeout(function(){
+
+			timer = setInterval(function() {
+				if (i >= data.length) {
+					clearInterval(timer)
+					return
+				}
+				ctx.moveTo(data[i]['oldx'],data[i]['oldy']);
+				ctx.lineTo(data[i]['newx'],data[i]['newy']);
+				ctx.strokeStyle = 'white';
+				ctx.stroke();
+				i++;
+			})
+		},10000)
 	}
 	websocket.onerror = function(evt) {
 		console.log('web on error')
