@@ -126,6 +126,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
 
     def on_close(self):
         publicPaint.remove(self.callback)
+        online.remove(self.doc['name'])
         print 'someone leaved'
 
     @tornado.web.asynchronous
