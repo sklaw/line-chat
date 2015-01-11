@@ -69,21 +69,19 @@ $(document).ready(function() {
 		}
 	})
 
-	$('#myCanvas').on({ 'touchmove' : function(e){ /* do something... */ 
+	$('#myCanvas').on({ 'touchmove' : function(event){ /* do something... */ 
 		$("#message").html("touchmove")
-		e.preventDefault();
-      	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
       	var elm = $(this).offset();
-      	var x = touch.pageX - elm.left;
-      	var y = touch.pageY - elm.top;
+      	var x = event.pageX - elm.left;
+      	var y = event.pageY - elm.top;
       	
       	if(x < $(this).width() && x > 0){
           	if(y < $(this).height() && y > 0){
           		clearTimeout(timerSend)
-          		t1 = touch.pageX
+          		t1 = event.pageX
           		oldx = x
   				oldy = y
-          		setTimeout(draw, 100, e.originalEvent.touches[0] || e.originalEvent.changedTouches[0])
+          		setTimeout(draw, 100, event)
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
           	}
