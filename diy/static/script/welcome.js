@@ -69,19 +69,23 @@ $(document).ready(function() {
 		}
 	})
 
-	$('#myCanvas').on({ 'touchmove' : function(event){ /* do something... */ 
-		$("#message").html("touchmove")
+	$('#myCanvas').on({ 'touchmove' : function(e){ /* do something... */ 
+		e.preventDefault();
+      	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
       	var elm = $(this).offset();
-      	var x = event.pageX - elm.left;
-      	var y = event.pageY - elm.top;
+      	var x = touch.pageX - elm.left;
+      	var y = touch.pageY - elm.top;
       	
       	if(x < $(this).width() && x > 0){
           	if(y < $(this).height() && y > 0){
           		clearTimeout(timerSend)
-          		oldx = x
-  				oldy = y
-  				$("#cord").html(oldx.toString()+','+oldy.toString())
-          		setTimeout(draw, 100, event)
+          		var event = {};
+          		event.offsetX = x
+          		event.offsetY = y
+          		$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
+          		oldx = event.offsetX
+  				oldy = event.offsetY
+          		setTimeout(draw2, 100, event)
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
           	}
@@ -130,6 +134,24 @@ function draw(event) {
 	
 	lineAmount++;
 	$("#lineAmount").html(lineAmount.toString())
+	var obj = {}
+	obj["oldx"] = oldx;
+	obj["oldy"] = oldy;
+	obj["newx"] = newx;
+	obj["newy"] = newy;
+	sendCon.push(obj)
+	
+	oldx = newx
+  	oldy = newy
+}
+
+function draw2(event) {
+	ctx.moveTo(oldx,oldy);
+	newx = event.offsetX
+	newy = event.offsetY
+	ctx.lineTo(newx,newy);
+	ctx.stroke();
+
 	var obj = {}
 	obj["oldx"] = oldx;
 	obj["oldy"] = oldy;
