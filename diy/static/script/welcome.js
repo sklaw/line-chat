@@ -122,6 +122,7 @@ function draw(event) {
   	$("#cord").html(oldx.toString() + ", " + oldy.toString())
 	newx = event.offsetX
 	newy = event.offsetY
+	$("#cord").html(oldx.toString() + ", " + newx.toString())
 	ctx.lineTo(newx,newy);
 	ctx.stroke();
 	
@@ -182,7 +183,7 @@ function linesHandler(data) {
 		$("#result").html("wb onmessage:"+data[i])
 		ctx.moveTo(data[i]['oldx'],data[i]['oldy']);
 		ctx.lineTo(data[i]['newx'],data[i]['newy']);
-		ctx.strokeStyle = 'black';
+		
 		ctx.stroke();
 		
 		//lineAmount++;
