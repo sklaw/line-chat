@@ -52,16 +52,18 @@ $(document).ready(function() {
 		$("#message").html("mousemove")
 		
 		if (clicking)	{
-			
-			
-  			
   			var elm = $(this).offset();
   			offsetX = event.pageX-elm.left;
   			offsetY = event.pageY-elm.top;
+
   			oldx = offsetX
   			oldy = offsetY
+
+  			var recordX = oldx
+  			var recordY = oldy
+
   			//$("#cord").html(oldx.toString() + ", " + oldy.toString())
-  			setTimeout(draw, 100, event)
+  			setTimeout(draw, 100, recordX, recordY)
 
 		}
 		else {
@@ -78,14 +80,10 @@ $(document).ready(function() {
       	
       	if(x < $(this).width() && x > 0){
           	if(y < $(this).height() && y > 0){
-          		clearTimeout(timerSend)
-          		var event = {};
-          		event.offsetX = x
-          		event.offsetY = y
-          		$("#cord").html(event.offsetX.toString() + ", " + event.offsetY.toString())
-          		oldx = event.offsetX
-  				oldy = event.offsetY
-          		setTimeout(draw2, 100, event)
+          		
+          		oldx = x
+  				oldy = x
+          		setTimeout(draw, 100, x, y)
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
           	}
@@ -118,18 +116,10 @@ $(document).ready(function() {
 
 })
 
-function draw(event) {
+function draw(recordX, recordY) {
 	ctx.moveTo(oldx,oldy);
-	var elm = $(event.target).offset();
-  	offsetX = event.pageX-elm.left;
-  	offsetY = event.pageY-elm.top;
-
-	newx = offsetX
-	newy = offsetY
 	
-	
-		
-	ctx.lineTo(newx,newy);
+	ctx.lineTo(recordX,recordY);
 	ctx.stroke();
 	
 	lineAmount++;
@@ -137,31 +127,11 @@ function draw(event) {
 	var obj = {}
 	obj["oldx"] = oldx;
 	obj["oldy"] = oldy;
-	obj["newx"] = newx;
-	obj["newy"] = newy;
+	obj["newx"] = recordX;
+	obj["newy"] = recordY;
 	sendCon.push(obj)
-	
-	oldx = newx
-  	oldy = newy
 }
 
-function draw2(event) {
-	ctx.moveTo(oldx,oldy);
-	newx = event.offsetX
-	newy = event.offsetY
-	ctx.lineTo(newx,newy);
-	ctx.stroke();
-
-	var obj = {}
-	obj["oldx"] = oldx;
-	obj["oldy"] = oldy;
-	obj["newx"] = newx;
-	obj["newy"] = newy;
-	sendCon.push(obj)
-	
-	oldx = newx
-  	oldy = newy
-}
 
 function wbstart() {
 	var host = "wss://test3-sklaw.rhcloud.com:8443/share";
