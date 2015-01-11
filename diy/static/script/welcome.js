@@ -19,6 +19,7 @@ $(document).ready(function() {
 		});
 	})
 	$('#myCanvas').mousedown(function(){
+		$("message").html("mousedown")
     	clicking = true;
     	clearTimeout(timerSend)
     	sendYet = false;
@@ -28,6 +29,7 @@ $(document).ready(function() {
 	});
 
 	$("#myCanvas").mouseup(function(){
+		$("message").html("mouseup")
     	clicking = false;
     	$("#ispress").html("no")
 		clearTimeout(timerSend)
@@ -43,7 +45,7 @@ $(document).ready(function() {
 	})
 
 	$("#myCanvas").mousemove(function(event) {
-		var timer4send;
+		$("message").html("mousemove")
 		
 		if (clicking)	{
 			
@@ -90,6 +92,7 @@ $(document).ready(function() {
 	} });
 
 	$('#myCanvas').on({ 'touchend' : function(e){ /* do something... */ 
+		$("message").html("touchend")
 		clearTimeout(timerSend)
 		timerSend = setTimeout(function() {
 			console.log('gonna shot.')
