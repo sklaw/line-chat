@@ -78,9 +78,9 @@ $(document).ready(function() {
       	if(x < $(this).width() && x > 0){
           	if(y < $(this).height() && y > 0){
           		clearTimeout(timerSend)
-          		t1 = event.pageX
           		oldx = x
   				oldy = y
+  				$("#cord").html(oldx.toString()+','+oldy.toString())
           		setTimeout(draw, 100, event)
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
@@ -122,9 +122,8 @@ function draw(event) {
 
 	newx = offsetX
 	newy = offsetY
-	t2 = event.pageX
 	
-	$("#cord").html(t1.toString()+','+t2.toString())
+	
 		
 	ctx.lineTo(newx,newy);
 	ctx.stroke();
