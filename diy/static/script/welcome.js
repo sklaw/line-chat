@@ -18,7 +18,29 @@ $(document).ready(function() {
 			return false;
 		});
 	})
-	
+	$('#myCanvas').mousedown(function(){
+    	clicking = true;
+    	clearTimeout(timerSend)
+    	sendYet = false;
+    	$("#ispress").html("yes")
+    	$("#sendYet").html("wait to send")
+    	//$('.clickstatus').text('mousedown');
+	});
+
+	$("#myCanvas").mouseup(function(){
+    	clicking = false;
+    	$("#ispress").html("no")
+		clearTimeout(timerSend)
+		timerSend = setTimeout(function() {
+			console.log('gonna shot.')
+			//sendCon.push("lines")
+			websocket.send(JSON.stringify({data:sendCon, type:"lines"}));
+			sendCon = []
+			$("#sendYet").html("sendYet")
+		}, 1000)
+    	//$('.clickstatus').text('mouseup');
+    	//$('.movestatus').text('click released, no more move event');
+	})
 
 	$("#myCanvas").mousemove(function(event) {
 		var timer4send;
@@ -42,6 +64,7 @@ $(document).ready(function() {
 	})
 
 	$('#myCanvas').on({ 'touchmove' : function(e){ /* do something... */ 
+		$("message").html("touchmove")
 		e.preventDefault();
       	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
       	var elm = $(this).offset();
