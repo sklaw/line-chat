@@ -132,6 +132,7 @@ def namecookieHandler(self, info, infoParsed):
     begin = infoParsed['data'].index('"')
     cookie = infoParsed['data'][begin+1:-1]
     name = tornado.web.decode_signed_value(self.application.settings["cookie_secret"], 'username', cookie)
+    self.name = name;
     if not name:
         print "the name cookie cant be decoded."
         self.callback(json.dumps({'data': "closeConnection", 'type': "action"}))
@@ -183,7 +184,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         print "wb close:"
         print self.handlerId
 
-        search_result = [i for i in online if i["name"] == self.doc['name']]
+        search_result = [i for i in online if i["name"] == self.name]
         if search_result[0]['handlerId'] != self.handlerId:
             print "handlerId matched."+self.doc['name']+' is leaving ugly.'
             #self.doc['callback'] = None
