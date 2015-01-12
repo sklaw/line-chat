@@ -13,7 +13,7 @@ import json
 import uuid
 
 online = []
-publicPaint = []
+#publicPaint = []
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -172,14 +172,13 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         return True
 
     def open(self):
-        publicPaint.append(self.callback)
+        #publicPaint.append(self.callback)
         self.handlerId = uuid.uuid4()
         print "wb open:"
         print self.handlerId
 
     def on_close(self):
-        if self.callback in publicPaint:
-            publicPaint.remove(self.callback)
+        
 
         print "wb close:"
         print self.handlerId
@@ -211,9 +210,9 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
                 self.write_message(json.dumps({'data': "shareHandler:on_message:cant save lines:数据库对话出错！打电话给我好吗！18814091187", 'type': "message"}))
             
 
-            for i in publicPaint:
-                if i != self.callback:
-                    i(info)
+            for i in online:
+                if i['callback'] != self.callback:
+                    i['callback'](info)
         elif infoParsed["type"] == "action":
             if infoParsed["data"] == "clear":
                 self.doc["lines"] = []
