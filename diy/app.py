@@ -12,6 +12,8 @@ import base64, uuid
 import json
 import uuid
 
+f = open(os.environ['OPENSHIFT_LOG_DIR']+'mylog', 'w')
+print >> f
 
 online = []
 #publicPaint = []
@@ -231,8 +233,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
     
 
 def main(address):
-    f = open(os.environ['OPENSHIFT_LOG_DIR']+'mylog', 'w')
-    print >> f
+
 
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(8080, address)
