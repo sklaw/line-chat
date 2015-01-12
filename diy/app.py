@@ -11,7 +11,7 @@ import time
 import base64, uuid
 import json
 import uuid
-import logging
+
 
 online = []
 #publicPaint = []
@@ -201,7 +201,6 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         infoParsed = json.loads(info)
 
         print "on_message----type:"+infoParsed["type"]
-        logging.debug ("on_message----type:"+infoParsed["type"])
         if infoParsed["type"] == "namecookie":
             namecookieHandler(self, info, infoParsed)
         elif infoParsed["type"] == "lines":
@@ -213,7 +212,6 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
             
 
             for i in online:
-                logging.debug ("lines dispatch to:"+i['name'])
                 if i['callback'] != self.callback:
                     i['callback'](info)
         elif infoParsed["type"] == "action":
@@ -233,6 +231,9 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
     
 
 def main(address):
+    f = open(os.environ['OPENSHIFT_LOG_DIR']+'mylog', 'w')
+    print >> f
+
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(8080, address)
     #http_server.listen(8080)
