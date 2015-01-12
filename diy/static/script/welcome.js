@@ -9,8 +9,7 @@ var timerSend;
 var clicking = false;
 var lineAmount = 0;
 
-var t1 = 0;
-var t2 = 0;
+var intentclose = false;
 
 $(document).ready(function() {
 	setTimeout(wbstart, 100)
@@ -108,7 +107,12 @@ $(document).ready(function() {
 	$('#clear').click(function(e) {
 		websocket.send(JSON.stringify({data:"clear", type:"action"}));
 	})
-
+	$('#logout').click(function(e) {
+		intentclose = true;
+		websocket.close();
+		document.cookie = 'username' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+		window.location.href = "/";
+	})
 
 	c = document.getElementById("myCanvas");
 
@@ -135,33 +139,63 @@ function draw(recordX, recordY) {
 
 function wbstart() {
 	var host = "wss://test3-sklaw.rhcloud.com:8443/share";
-	//var host = "ws://localhost:8080/share";
+	//var host = "ws://192.168.1.207:8080/share";
 	websocket = new WebSocket(host);
 	websocket.onopen = function (evt) {
-		$("#result").html("wb opened.")
-		websocket.send(JSON.stringify({data:$("#name").html(), type:"name"}))
+		$("#wbstate").html('wbstate:'+"onopen")
+		$("#log").html('')
+		websocket.send(JSON.stringify({data:document.cookie, type:"namecookie"}))
 	}
 	websocket.onmessage = function(evt) {
+		$("#wbstate").html('wbstate:'+"onmessage")
+		$("#log").html('')
+
 		var data = $.parseJSON(evt.data)
+
+		$("#onmessagetype").html('onmessage type:'+data["type"])
 		if (data["type"] == 'lines') {
 			//console.log(data["data"]) 
 			//console.log("lines received.")
 			linesHandler(data["data"]);
+			//onmessageDone()
 		}
 		else if (data["type"] == 'message') {
 			$("#message").html(data["data"])
+			onmessageDone()
+		}
+		else if (data["type"] == 'errormessage') {
+			$("#errormessage").html('error:'+data["data"])
+			onmessageDone()
 		}
 		else if (data["type"] == "action") {
 			if (data["data"] == "clear") {
 				//console.log("clear")
 				clearLines()
-				
+				//onmessageDone()
+			}
+			else if (data["data"] == "closeConnection") {
+				intentclose = true
+				document.cookie = 'username' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+				websocket.close()
 			}
 		}
 		//
 	}
 	websocket.onerror = function(evt) {
-		$("#message").html('wb error')
+		$("#wbstate").html('wbstate:'+"onerror")
+		$("#log").html('wb error, now try to reconnect')
+		websocket.close()
+		setTimeout(wbstart, 1000)
+	}
+	websocket.onclose = function(evt) {
+		if (intentclose) {
+			$("#wbstate").html('wbstate:'+"onclose")
+			$("#log").html('force to be offline, this behavior is intended, so I WILL NOT try to reconnect. this may be cause by multiple-login. login again thanks.')
+			return;
+		}
+		$("#wbstate").html('wbstate:'+"onclose")
+		$("#log").html('offline, now try to reconnect')
+		setTimeout(wbstart, 1000)
 	}
 }
 
@@ -172,6 +206,7 @@ function linesHandler(data) {
 		if (i >= data.length) {
 			clearInterval(timer)
 			$("#result").html("wb waiting.")
+			onmessageDone()
 			return
 		}
 		$("#result").html("wb onmessage:"+data[i])
@@ -200,6 +235,7 @@ function clearLines() {
 			t = setInterval(function() {
 				if (i == 255) {
 					clearInterval(t)
+					onmessageDone()
 				}
 				str = i.toString()
 				$("#myCanvas").css('background-color', 'rgb('+str+','+str+','+str+')'); 
@@ -211,4 +247,8 @@ function clearLines() {
 		$("#myCanvas").css('background-color', 'rgb('+str+','+str+','+str+')'); 
 		i -= 15;
 	}, 10)
+}
+
+function onmessageDone() {
+	$("#wbstate").html('wbstate:'+"message has been handled and it's idle now")
 }

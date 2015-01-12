@@ -9,20 +9,26 @@
 </head>
 <body>
 	<p id="name">{{name}}</p>
-	<form action="/logout" method="get">
-		<input type="submit" value="log out">
-	</form>
+	
+	<input id="logout" type="submit" value="log out">
+	
 	<button id="clear">clear</button>
 	<br>
 	<canvas id="myCanvas" width="1000" height="400" style="border:1px solid black;">
 		Your browser does not support the HTML5 canvas tag.
 	</canvas>
+	<p id="log"></p>
+	<p id="wbstate"></p>
+	<p id="onmessagetype"></p>
 	<p id="message"></p>
 	<p id="cord"></p>
 	<p id="lineAmount"></p>
 	<p id="ispress"></p>
 	<p id="sendYet"></p>
 	<p id="result"></p>
+
+	<p id="errormessage"></p>
+
 </body>
 
 </html>
