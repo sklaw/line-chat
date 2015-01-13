@@ -231,9 +231,12 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
             for i in online:
                 if i['callback'] != self.callback:
                     print "dispatch to: "+i['name']
+                    print i['callback']
                     i['callback'](info)
         elif infoParsed["type"] == "action":
             if infoParsed["data"] == "clear":
+                print "clear request from "+self.name
+                print self.callback
                 self.doc["lines"] = []
                 dbtalk = yield tornado.gen.Task(self.users.update, {"_id":self.doc["_id"]}, self.doc, True)
                 #print dbtalk
