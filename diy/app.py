@@ -206,8 +206,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
             return
         if search_result[0]['handlerId'] != self.handlerId:
             print "handlerId not matched."+self.doc['name']+' is leaving ugly.'
-            #self.doc['callback'] = None
-            #dbtalk = yield tornado.gen.Task(self.users.update, {"_id":self.doc["_id"]}, self.doc, True)
+            
         else:
             print "handlerId matched."+self.doc['name']+' is leaving decently.'
             online.remove(search_result[0])

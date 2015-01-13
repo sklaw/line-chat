@@ -96,7 +96,6 @@ $(document).ready(function() {
 		clearTimeout(timerSend)
 		timerSend = setTimeout(function() {
 			console.log('gonna shot.')
-			sendCon.push("lines")
 			websocket.send(JSON.stringify({data:sendCon, type:"lines"}));
 			sendCon = []
 		}, 1000)
@@ -153,6 +152,7 @@ function wbstart() {
 		var data = $.parseJSON(evt.data)
 		console.log(data["type"])
 		console.log(data['data'])
+		console.log(data['type'] == 'lines')
 		$("#onmessagetype").html('onmessage type:'+data["type"])
 		if (data["type"] == 'lines') {
 			//console.log(data["data"]) 
