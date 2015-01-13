@@ -190,6 +190,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         #publicPaint.append(self.callback)
         self.handlerId = uuid.uuid4()
+        self.name = ""
         print "wb open:"
         print self.handlerId
 
@@ -201,7 +202,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
 
         search_result = [i for i in online if i["name"] == self.name]
         if not search_result:
-        	return
+            return
         if search_result[0]['handlerId'] != self.handlerId:
             print "handlerId matched."+self.doc['name']+' is leaving ugly.'
             #self.doc['callback'] = None
