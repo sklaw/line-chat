@@ -227,9 +227,10 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
             if dbtalk.kwargs['error']:
                 self.write_message(json.dumps({'data': "shareHandler:on_message:cant save lines:数据库对话出错！打电话给我好吗！18814091187", 'type': "message"}))
             
-
+            print "the data is from: "+self.name
             for i in online:
                 if i['callback'] != self.callback:
+                	print "dispatch to: "+i['name']
                     i['callback'](info)
         elif infoParsed["type"] == "action":
             if infoParsed["data"] == "clear":
