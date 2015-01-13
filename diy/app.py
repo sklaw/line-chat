@@ -230,7 +230,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
             print "the data is from: "+self.name
             for i in online:
                 if i['callback'] != self.callback:
-                	print "dispatch to: "+i['name']
+                    print "dispatch to: "+i['name']
                     i['callback'](info)
         elif infoParsed["type"] == "action":
             if infoParsed["data"] == "clear":
