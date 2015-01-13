@@ -204,7 +204,9 @@ function linesHandler(data) {
 	console.log("in linesHandler")
 	var i = 0;
 	ctx.strokeStyle = 'black';
-	timer = setInterval(function() {
+	console.log(i)
+	console.log(data.length)
+	var timer = setInterval(function() {
 		if (i >= data.length) {
 			clearInterval(timer)
 			$("#result").html("wb waiting.")
