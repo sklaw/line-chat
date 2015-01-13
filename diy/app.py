@@ -169,6 +169,7 @@ def namecookieHandler(self, info, infoParsed):
             online.append({"name":name, "handlerId":self.handlerId, "callback":self.callback})
         elif search_result[0]["handlerId"] != self.handlerId:
             print name+" come dirty! now clear the former login-er."
+            print search_result[0]["callback"]
             search_result[0]["callback"](json.dumps({'data': "closeConnection", 'type': "action"}))
             search_result[0]["handlerId"] = self.handlerId
             search_result[0]["callback"] = self.callback
@@ -204,11 +205,11 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         if not search_result:
             return
         if search_result[0]['handlerId'] != self.handlerId:
-            print "handlerId matched."+self.doc['name']+' is leaving ugly.'
+            print "handlerId not matched."+self.doc['name']+' is leaving ugly.'
             #self.doc['callback'] = None
             #dbtalk = yield tornado.gen.Task(self.users.update, {"_id":self.doc["_id"]}, self.doc, True)
         else:
-            print "handlerId not matched."+self.doc['name']+' is leaving decently.'
+            print "handlerId matched."+self.doc['name']+' is leaving decently.'
             online.remove(search_result[0])
 
         print self.doc['name']+' leaved'

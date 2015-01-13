@@ -151,7 +151,8 @@ function wbstart() {
 		$("#log").html('')
 
 		var data = $.parseJSON(evt.data)
-
+		console.log(data["type"])
+		console.log(data['data'])
 		$("#onmessagetype").html('onmessage type:'+data["type"])
 		if (data["type"] == 'lines') {
 			//console.log(data["data"]) 
