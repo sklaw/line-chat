@@ -201,6 +201,7 @@ function wbstart() {
 }
 
 function linesHandler(data) {
+	console.log("in linesHandler")
 	var i = 0;
 	ctx.strokeStyle = 'black';
 	timer = setInterval(function() {
@@ -215,7 +216,7 @@ function linesHandler(data) {
 		ctx.lineTo(data[i]['newx'],data[i]['newy']);
 		
 		ctx.stroke();
-		
+		console.log("drawed a line")
 		//lineAmount++;
 		//$("#lineAmount").html(lineAmount.toString())
 		i++;
