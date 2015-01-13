@@ -200,6 +200,8 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         print self.handlerId
 
         search_result = [i for i in online if i["name"] == self.name]
+        if not search_result:
+        	return
         if search_result[0]['handlerId'] != self.handlerId:
             print "handlerId matched."+self.doc['name']+' is leaving ugly.'
             #self.doc['callback'] = None
