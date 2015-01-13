@@ -12,8 +12,21 @@ import base64, uuid
 import json
 import uuid
 
-f = open(os.environ['OPENSHIFT_LOG_DIR']+'mylog', 'w')
-print >> f
+import sys
+
+f = open(os.environ['OPENSHIFT_LOG_DIR']+'mylog.log', 'w')
+
+
+class Unbuffered(object):
+   def __init__(self, stream):
+       self.stream = stream
+   def write(self, data):
+       self.stream.write(data)
+       self.stream.flush()
+   def __getattr__(self, attr):
+       return getattr(self.stream, attr)
+
+sys.stdout = Unbuffered(f)
 
 online = []
 #publicPaint = []
