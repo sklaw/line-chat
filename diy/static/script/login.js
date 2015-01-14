@@ -1,7 +1,21 @@
 var url = "";
 $(document).ready(function() {
 	$('#summit').click(function(event) {
+		$(this).attr("disabled", "disabled")
 		$('#result').html("");
+		if (!validInput($('#name').val())) {
+			$('#result').html("名字非法哦 1到10个英文或数字谢谢");
+			$(this).removeAttr("disabled")
+			return;
+		}
+		if (!validInput($('#password').val())) {
+			$('#result').html("密码非法哦 1到10个英文或数字谢谢");
+			$(this).removeAttr("disabled")
+			return;
+		}
+
+
+
 		$.ajax({
 				url: url,
 				type: 'POST',
@@ -19,6 +33,7 @@ $(document).ready(function() {
 							window.location.href = "/";
 						}
 						else {
+							$("#summit").removeAttr("disabled")
 							$('#result').html(data["message"])
 						}
 				},
@@ -40,3 +55,13 @@ $(document).ready(function() {
 		}
 	})
 })
+
+
+function validInput(str) {
+	console.log(str)
+	var re = /^(\w){1,10}$/
+	var result = str.match(re)
+	console.log(result)
+	return result
+}
+

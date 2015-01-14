@@ -9,26 +9,59 @@
 </head>
 <body>
 	<p id="name">{{name}}</p>
-	
-	<input id="logout" type="submit" value="log out">
-	
-	<button id="clear">clear</button>
-	<br>
-	<canvas id="myCanvas" width="1000" height="400" style="border:1px solid black;">
-		Your browser does not support the HTML5 canvas tag.
-	</canvas>
-	<p id="log"></p>
-	<p id="wbstate"></p>
-	<p id="onmessagetype"></p>
-	<p id="message"></p>
-	<p id="cord"></p>
-	<p id="lineAmount"></p>
-	<p id="ispress"></p>
-	<p id="sendYet"></p>
-	<p id="result"></p>
 
-	<p id="errormessage"></p>
+	<div class="level2 level1_1">
+		<button id="gobacktocanvaslistpage">go back</button>
+	</div>
 
+	<div class="level1">
+		<button id="logout">logout</button>
+		<div>
+			my canvas:
+			<div id="canvasicreate"></div>
+			canvas I'm invited to:
+			<div id='canvasimin'></div>
+		</div>
+		<button  id="createNewCanvas">create a new canvas</button>
+		<span></span>
+	</div>
+	<div class="level1_1" id="level1_1_Block">
+		<div>
+			画布名字:
+			<input type="text" id="createcanvasname"><span></span>
+		</div>
+		邀请的人类：（至少一个最多四个哦）:
+		<br>
+		<button id="moreInvitedUser">add one</button><br>
+		<button id="submitInvitedUser">confrim</button><span></span>
+	</div>
+
+	
+
+	<div class="level2">
+		<div id="canvasinfoBlock"></div>
+		<div>
+			<button id="dismissCanvas">dismiss this canvas</button>
+		</div>
+		<canvas id="myCanvas" width="1000" height="400" style="border:1px solid black;">
+			Your browser does not support the HTML5 canvas tag.
+		</canvas>
+		<div>
+			<button id="clear">clear</button>
+		</div>
+	</div>
+	<div>
+		<p id="log"></p>
+		<p id="wbstate"></p>
+		<p id="onmessagetype"></p>
+		<p id="message"></p>
+		<p id="cord"></p>
+		<p id="lineAmount"></p>
+		<p id="ispress"></p>
+		<p id="sendYet"></p>
+		<p id="result"></p>
+		<p id="errormessage"></p>
+	</div>
 </body>
 
 </html>
