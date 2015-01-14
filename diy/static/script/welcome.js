@@ -492,6 +492,7 @@ function processMission() {
 		idle = true;
 	}
 	else {
+		idle = false;
 		onmessageHandler(missionqueue.shift())
 	}
 }
