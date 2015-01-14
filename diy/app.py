@@ -358,6 +358,9 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
                 return
             self.canvasinfo = dbtalk.args[0]
 
+            if not self.canvasinfo:
+            	self.write_message(json.dumps({'data': "this canvas has been deleted. refresh the page please", 'type': "errormessage"}))
+                return
             
             del self.canvasinfo['_id']
             
