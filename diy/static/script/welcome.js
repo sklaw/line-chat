@@ -27,7 +27,8 @@ var recordF = 50
 
 var waitingTime = 3000;
 
-var
+var missionqueue = []
+var idle = true;
 
 function level_1_display() {
 	$(".level2").hide()
@@ -455,7 +456,12 @@ function wbstart() {
 		console.log(data['data'])
 		
 		$("#onmessagetype").html('onmessage type:'+data["type"])
-		onmessageHandler(data)
+
+		missionqueue.push(data)
+
+		if (idle) {
+			processMission()
+		}
 		
 		//
 	}
@@ -478,6 +484,15 @@ function wbstart() {
 		$("#wbstate").html('wbstate:'+"onclose")
 		$("#log").html('offline, now try to reconnect')
 		setTimeout(wbstart, 5000)
+	}
+}
+
+function processMission() {
+	if (missionqueue.length == 0) {
+		idle = true;
+	}
+	else {
+		onmessageHandler(missionqueue.shift())
 	}
 }
 
@@ -533,6 +548,7 @@ function onmessageHandler(data) {
 				console.log("asking canvas:"+$(this).html())
 				websocket.send(JSON.stringify({data:$(this).html(), type:"entercanvas"}))
 			})
+			onmessageDone()
 		}
 		else if (data['type'] == 'addcanvasoption') {
 			$("#canvasimin").append("<button class='canvaslistelm'>"+data['data']+"</button>")
@@ -544,6 +560,7 @@ function onmessageHandler(data) {
 			})
 
 			$("button").removeAttr("disabled")
+			onmessageDone()
 		}
 		else if (data['type'] == 'canvaspack') {
 			lineAmount = 0
@@ -676,6 +693,7 @@ function drawOneLineFast(linedata) {
 
 function onmessageDone() {
 	$("#wbstate").html('wbstate:'+"message has been handled and it's idle now")
+	processMission();
 }
 
 
@@ -693,12 +711,14 @@ function displaycanvaslist(canvaslist, seletor) {
 
 function handleLinePatch(linepatch) {
 	console.log("in handleLinePatch")
-	linesHandler(linepatch['data'])
+	
 	if ( (linepatch['owner'] == $("#name").html()) ) {
 		lineAmount += linepatch['data'].length
 		$("#lineAmount").html(lineAmount.toString())
 	}
 	canvasUsers[linepatch['owner']]['lines'].push(linepatch['data'])
+
+	linesHandler(linepatch['data'])
 }
 
 function User() {
