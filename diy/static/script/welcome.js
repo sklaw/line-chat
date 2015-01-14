@@ -285,6 +285,7 @@ function addOneInvitedUser() {
 			$(input).css("background-color", "white")
 			$(input).attr("name", '0')
 			timer = setTimeout(function(){
+				$(span).html("checking")
 				if (!validInput($(input).val())) {
 					$(span).html("名字非法哦 1到10个英文或数字谢谢")
 					$(input).css("background-color", "red")
