@@ -610,7 +610,7 @@ function linesHandler(data) {
 		//lineAmount++;
 		//$("#lineAmount").html(lineAmount.toString())
 		i++;
-	}, 10)
+	}, recordF)
 }
 
 function clearLines() {
