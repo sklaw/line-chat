@@ -500,10 +500,10 @@ class Application(tornado.web.Application):
                                         dbuser=os.environ['OPENSHIFT_MONGODB_DB_USERNAME'], 
                                         dbpass=os.environ['OPENSHIFT_MONGODB_DB_PASSWORD'])
 
-        #self.test3 = asyncmongo.Client(pool_id="mydb",
-        #                                host="localhost",
-        #                                port=27017,
-        #                                dbname='test3')
+        self.test3 = asyncmongo.Client(pool_id="mydb",
+                                        host="localhost",
+                                        port=27017,
+                                        dbname='test3')
   
         
         settings = {

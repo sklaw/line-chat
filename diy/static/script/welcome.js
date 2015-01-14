@@ -1,11 +1,15 @@
 var oldx = null;
 var oldy = null;
+var newx = null;
+var newy = null;
 var websocket = null;
 var c
 var ctx
 var sendCon = []
 
 var timerSend;
+var timerRecord;
+
 var clicking = false;
 var lineAmount = 0;
 
@@ -18,6 +22,8 @@ var reconnectTimes = 0
 var canvasUsers = {}
 
 var invitedAmount = 0
+
+var recordF = 50
 
 function level_1_display() {
 	$(".level2").hide()
@@ -38,6 +44,11 @@ function level_2_display() {
 }
 
 function sendsendCon() {
+	if (lineAmount > 500) {
+		$("#errormessage").html("画的线最多500条哦 刷新重新画一次吧")
+		return
+	}
+	$("#errormessage").html("")
 	websocket.send(JSON.stringify({data:sendCon, type:"lines"}));
 	canvasUsers[$('#name').html()]["lines"].push(sendCon)
 	sendCon = []
@@ -54,21 +65,46 @@ $(document).ready(function() {
 			return false;
 		});
 	})
-	$('#myCanvas').mousedown(function(){
+
+
+	$('#myCanvas').bind('mousedown', function(event){
+		clearTimeout(timerSend)
 		$("#message").html("mousedown")
     	clicking = true;
-    	clearTimeout(timerSend)
+    	
     	sendYet = false;
     	$("#ispress").html("yes")
     	$("#sendYet").html("wait to send")
+    	var elm = $(this).offset();
+    	oldx = event.pageX-elm.left;
+  		oldy = event.pageY-elm.top;
+		newx = event.pageX-elm.left;
+  		newy = event.pageY-elm.top;
+
     	//$('.clickstatus').text('mousedown');
+    	timerRecord = setInterval(draw, recordF)
 	});
 
-	$("#myCanvas").mouseup(function(){
+	
+
+	$("#myCanvas").bind('mousemove', function(event) {
+		$("#message").html("mousemove")
+		var elm = $(this).offset();
+		if (clicking)	{
+  			oldx = event.pageX-elm.left;
+  			oldy = event.pageY-elm.top;
+		}
+		else {
+			
+		}
+	})
+
+
+	$("#myCanvas").bind('mouseup', function(){
+		clearInterval(timerRecord)
 		$("#message").html("mouseup")
     	clicking = false;
     	$("#ispress").html("no")
-		clearTimeout(timerSend)
 		timerSend = setTimeout(function() {
 			console.log('gonna shot.')
 			
@@ -79,30 +115,34 @@ $(document).ready(function() {
     	//$('.movestatus').text('click released, no more move event');
 	})
 
-	$("#myCanvas").mousemove(function(event) {
-		$("#message").html("mousemove")
-		
-		if (clicking)	{
-  			var elm = $(this).offset();
-  			offsetX = event.pageX-elm.left;
-  			offsetY = event.pageY-elm.top;
+	
 
-  			oldx = offsetX
-  			oldy = offsetY
+	$('#myCanvas').on({ 'touchstart' : function(e){
+		$("#message").html("touchstart")
+		clearTimeout(timerSend)
+		$("#message").html("mousedown")
+    	
+    	sendYet = false;
+    	$("#ispress").html("yes")
+    	$("#sendYet").html("wait to send")
 
-  			var recordX = oldx
-  			var recordY = oldy
+    	
+    	e.preventDefault();
+      	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+      	var elm = $(this).offset();
+      	var x = touch.pageX - elm.left;
+      	var y = touch.pageY - elm.top;
 
-  			//$("#cord").html(oldx.toString() + ", " + oldy.toString())
-  			setTimeout(draw, 100, recordX, recordY)
 
-		}
-		else {
-			
-		}
-	})
+    	newx = x
+    	newy = y
+    	oldx = x
+  		oldy = y
+    	//$('.clickstatus').text('mousedown');
+    	timerRecord = setInterval(draw, recordF)
+	} });
 
-	$('#myCanvas').on({ 'touchmove' : function(e){ /* do something... */ 
+	$('#myCanvas').on({ 'touchmove' : function(e){
 		e.preventDefault();
       	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
       	var elm = $(this).offset();
@@ -114,7 +154,6 @@ $(document).ready(function() {
           		
           		oldx = x
   				oldy = y
-          		setTimeout(draw, 100, x, y)
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
           	}
@@ -123,12 +162,16 @@ $(document).ready(function() {
 
 	} });
 
-	$('#myCanvas').on({ 'touchend' : function(e){ /* do something... */ 
-		$("#message").html("touchend")
-		clearTimeout(timerSend)
+	$('#myCanvas').on({ 'touchend' : function(e){
+		clearInterval(timerRecord)
+		$("#message").html("mouseup")
+    	
+    	$("#ispress").html("no")
 		timerSend = setTimeout(function() {
 			console.log('gonna shot.')
+			
 			sendsendCon()
+			$("#sendYet").html("sendYet")
 		}, 1000)
       	//console.log(touch.pageY+' '+touch.pageX);
 	} });
@@ -262,7 +305,7 @@ $(document).ready(function() {
 	c = document.getElementById("myCanvas");
 
 	ctx = c.getContext("2d");
-
+	ctx.lineWidth = 5;
 })
 
 function addOneInvitedUser() {
@@ -368,26 +411,31 @@ function addOneInvitedUser() {
 		invitedAmount++
 }
 
-function draw(recordX, recordY) {
-	ctx.moveTo(oldx,oldy);
+function draw() {
+	ctx.moveTo(newx,newy);
 	
-	ctx.lineTo(recordX,recordY);
+	ctx.lineTo(oldx,oldy);
 	ctx.stroke();
-	
+
 	lineAmount++;
 	$("#lineAmount").html(lineAmount.toString())
 	var obj = {}
 	obj["oldx"] = oldx;
 	obj["oldy"] = oldy;
-	obj["newx"] = recordX;
-	obj["newy"] = recordY;
+	obj["newx"] = newx;
+	obj["newy"] = newy;
 	sendCon.push(obj)
+	newx = oldx
+	newy = oldy
 }
 
 
 function wbstart() {
 	var host = "wss://test3-sklaw.rhcloud.com:8443/share";
 	//var host = "ws://192.168.1.207:8080/share";
+
+	$("#wbstate").html('wbstate:'+"正努力连接到服务器")
+
 	websocket = new WebSocket(host);
 	websocket.onopen = function (evt) {
 		$("#wbstate").html('wbstate:'+"刚刚建立连接  数据正在读入哦")
@@ -467,6 +515,7 @@ function wbstart() {
 			$("button").removeAttr("disabled")
 		}
 		else if (data['type'] == 'canvaspack') {
+			lineAmount = 0
 			level_2_display()
 			$("button").removeAttr("disabled")
 			var linespack = data['linespack']
@@ -634,9 +683,9 @@ function displaycanvaslist(canvaslist, seletor) {
 function handleLinePatch(linepatch) {
 	console.log("in handleLinePatch")
 	linesHandler(linepatch['data'])
-	if ( !(linepatch['owner'] in canvasUsers) ) {
-		var obj = new User()
-		canvasUsers[linepatch['owner']] = obj
+	if ( (linepatch['owner'] == $("#name").html()) ) {
+		lineAmount += linepatch['data'].length
+		$("#lineAmount").html(lineAmount.toString())
 	}
 	canvasUsers[linepatch['owner']]['lines'].push(linepatch['data'])
 }
