@@ -323,7 +323,7 @@ function addOneInvitedUser() {
 		var input = $("<input></input>")
 		$(input).attr("type", "text")
 		//input.exist = false;
-		$(input).keydown(function() {
+		$(input).change(function() {
 			$(span).html("checking")
 			clearTimeout(timer)
 			$(span).html("")
