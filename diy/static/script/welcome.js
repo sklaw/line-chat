@@ -393,7 +393,7 @@ function addOneInvitedUser() {
 					console.log(error)
 				}
 		});
-			}, 1000)
+			}, 0)
 		})
 		
 		var button = $("<button></button>")
