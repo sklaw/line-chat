@@ -51,6 +51,7 @@ function level_2_display() {
 function sendsendCon() {
 	if (lineAmount > 500) {
 		$("#errormessage").html("画的线最多500条哦 刷新重新画一次吧")
+		sendCon = []
 		return
 	}
 	$("#errormessage").html("")
@@ -507,7 +508,7 @@ function onmessageHandler(data) {
 		else if (data['type'] == 'clearsomeone') {
 			console.log("gonna clear "+data['data']+"'s lines")
 			canvasUsers[data['data']]['lines'] = []
-			clearLines(data['data'])
+			clearLines()
 			$("button").removeAttr("disabled")
 		}
 		else if (data['type'] == "linepatch") {
