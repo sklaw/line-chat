@@ -25,6 +25,8 @@ var invitedAmount = 0
 
 var recordF = 50
 
+var waitingTime = 3000;
+
 function level_1_display() {
 	$(".level2").hide()
 	$(".level1_1").hide()
@@ -110,7 +112,7 @@ $(document).ready(function() {
 			
 			sendsendCon()
 			$("#sendYet").html("sendYet")
-		}, 1000)
+		}, waitingTime)
     	//$('.clickstatus').text('mouseup');
     	//$('.movestatus').text('click released, no more move event');
 	})
@@ -172,7 +174,7 @@ $(document).ready(function() {
 			
 			sendsendCon()
 			$("#sendYet").html("sendYet")
-		}, 1000)
+		}, waitingTime)
       	//console.log(touch.pageY+' '+touch.pageX);
 	} });
 
@@ -435,7 +437,7 @@ function wbstart() {
 	//var host = "ws://192.168.1.207:8080/share";
 
 	$("#wbstate").html('wbstate:'+"正努力连接到服务器")
-
+	$("button").attr("disabled", "disabled")
 	websocket = new WebSocket(host);
 	websocket.onopen = function (evt) {
 		$("#wbstate").html('wbstate:'+"刚刚建立连接  数据正在读入哦")
@@ -491,6 +493,7 @@ function wbstart() {
 			}
 		}
 		else if (data['type'] == 'canvaslist') {
+			$("button").removeAttr("disabled")
 			canvasimin = data['data']['imin']
 			canvasicreate = data['data']['icreate']
 			
@@ -572,7 +575,7 @@ function wbstart() {
 		reconnectTimes++
 		$("#wbstate").html('wbstate:'+"onclose")
 		$("#log").html('offline, now try to reconnect')
-		setTimeout(wbstart, 1000)
+		setTimeout(wbstart, 5000)
 	}
 }
 
