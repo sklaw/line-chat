@@ -27,6 +27,8 @@ var recordF = 50
 
 var waitingTime = 3000;
 
+var
+
 function level_1_display() {
 	$(".level2").hide()
 	$(".level1_1").hide()
@@ -453,7 +455,33 @@ function wbstart() {
 		console.log(data['data'])
 		
 		$("#onmessagetype").html('onmessage type:'+data["type"])
+		onmessageHandler(data)
+		
+		//
+	}
+	websocket.onerror = function(evt) {
+		$("#wbstate").html('wbstate:'+"onerror")
+		$("#log").html('wb error, refresh the page please')
+	}
+	websocket.onclose = function(evt) {
+		if (intentclose) {
+			$("#wbstate").html('wbstate:'+"onclose")
+			$("#log").html('force to be offline, this behavior is intended, so I WILL NOT try to reconnect. this may be cause by multiple-login. login again thanks.')
+			return;
+		}
+		if (reconnectTimes > 6) {
+			$("#wbstate").html('wbstate:'+"onclose")
+			$("#log").html('reconnect 6 times and not result.please relogin later.')
+			return;
+		}
+		reconnectTimes++
+		$("#wbstate").html('wbstate:'+"onclose")
+		$("#log").html('offline, now try to reconnect')
+		setTimeout(wbstart, 5000)
+	}
+}
 
+function onmessageHandler(data) {
 		if (data["type"] == 'lines') {
 			//console.log(data["data"]) 
 			//console.log("lines received.")
@@ -555,29 +583,9 @@ function wbstart() {
 				handleLinePatch(linespack[i])
 			}
 		}
-		//
-	}
-	websocket.onerror = function(evt) {
-		$("#wbstate").html('wbstate:'+"onerror")
-		$("#log").html('wb error, refresh the page please')
-	}
-	websocket.onclose = function(evt) {
-		if (intentclose) {
-			$("#wbstate").html('wbstate:'+"onclose")
-			$("#log").html('force to be offline, this behavior is intended, so I WILL NOT try to reconnect. this may be cause by multiple-login. login again thanks.')
-			return;
-		}
-		if (reconnectTimes > 6) {
-			$("#wbstate").html('wbstate:'+"onclose")
-			$("#log").html('reconnect 6 times and not result.please relogin later.')
-			return;
-		}
-		reconnectTimes++
-		$("#wbstate").html('wbstate:'+"onclose")
-		$("#log").html('offline, now try to reconnect')
-		setTimeout(wbstart, 5000)
-	}
 }
+
+
 
 function addDismissButton() {
 	console.log("in addDismissButton")
