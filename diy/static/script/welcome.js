@@ -621,7 +621,7 @@ function clearLines() {
 			
 			clearInterval(t)
 			ctx.beginPath();
-				
+			sendsendCon()
 			ctx.clearRect(0,0,c.width,c.height)
 			
 			redrawExcept()
