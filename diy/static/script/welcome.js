@@ -390,7 +390,7 @@ function wbstart() {
 	//var host = "ws://192.168.1.207:8080/share";
 	websocket = new WebSocket(host);
 	websocket.onopen = function (evt) {
-		$("#wbstate").html('wbstate:'+"onopen")
+		$("#wbstate").html('wbstate:'+"刚刚建立连接  数据正在读入哦")
 		$("#log").html('')
 		websocket.send(JSON.stringify({data:document.cookie, type:"namecookie"}))
 	}
@@ -463,6 +463,8 @@ function wbstart() {
 				console.log("asking canvas:"+$(this).html())
 				websocket.send(JSON.stringify({data:$(this).html(), type:"entercanvas"}))
 			})
+
+			$("button").removeAttr("disabled")
 		}
 		else if (data['type'] == 'canvaspack') {
 			level_2_display()
