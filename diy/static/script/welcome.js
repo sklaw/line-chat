@@ -504,7 +504,7 @@ function wbstart() {
 			})
 		}
 		else if (data['type'] == 'addcanvasoption') {
-			$("#canvaslist").append("<button class='canvaslistelm'>"+data['data']+"</button>")
+			$("#canvasimin").append("<button class='canvaslistelm'>"+data['data']+"</button>")
 
 			$(".canvaslistelm").click(function() {
 				lockAll()
