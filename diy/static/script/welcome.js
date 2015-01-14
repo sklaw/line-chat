@@ -218,10 +218,10 @@ $(document).ready(function() {
 					}		
 				}
 				else if (data["result"] == 0){
-					$("#createNewCanvas+span").html("one user only can create at most 5 canvas!")
+					$("#createNewCanvas+span").html("最多只能添加5个画布哦!你已经满啦,去删除一些吧")
 				}
 				else {
-					$("#createNewCanvas+span").html("dbtalk failed. refresh the page please.")
+					$("#createNewCanvas+span").html("数据库出问题了,刷新一下页面看看")
 				
 				}
 				$("button").removeAttr("disabled")
@@ -254,7 +254,7 @@ $(document).ready(function() {
     		}
     	})
     	if(!result) {
-    		$("#submitInvitedUser+span").html("invalid form! refine and re submit please.")
+    		$("#submitInvitedUser+span").html("表格有错误!请确认邀请人都变绿了")
     		$("button").removeAttr("disabled", "disabled")
     	}
     	else {
@@ -282,11 +282,11 @@ $(document).ready(function() {
 						websocket.send(JSON.stringify({data:$("#createcanvasname").val(), type:"entercanvas"}))
 					}
 					else if (data['result'] == 0){
-						$("#submitInvitedUser+span").html("the canvase name has been used. change it please.")
+						$("#submitInvitedUser+span").html("这个画布名已经被别人用了,换一个啦.")
 						$("button").removeAttr("disabled", "disabled")
 					}
 					else {
-						$("#submitInvitedUser+span").html("dbtalk error. please re-login later")
+						$("#submitInvitedUser+span").html("数据库出问题了,刷新一下页面看看")
 					}
     			},
     			error: function(error) {
@@ -342,7 +342,7 @@ function addOneInvitedUser() {
 				}
 
 				if ($(input).val() == $("#name").html()) {
-					$(span).html("dont invite yourself please!")
+					$(span).html("不要邀请自己谢谢!")
 					$(input).css("background-color", "red")
 					$(input).attr("name", '0')
 					return;
@@ -358,7 +358,7 @@ function addOneInvitedUser() {
     			})
     			console.log("repeatcheck:"+result)
 				if (result != 1) {
-					$(span).html("dont repeat please!")
+					$(span).html("这个名字之前填过了 不要重复邀请一个人哦")
 					$(input).css("background-color", "red")
 					$(input).attr("name", '0')
 					return;
@@ -387,7 +387,7 @@ function addOneInvitedUser() {
 							$(input).attr("name", '0')
 						}
 						else {
-							$(span).html("database talk failed! refresh the page please!")
+							$(span).html("数据库出错了 刷新一下谢谢")
 							$(input).attr("name", '0')
 						}
 				},
@@ -467,22 +467,22 @@ function wbstart() {
 	}
 	websocket.onerror = function(evt) {
 		$("#wbstate").html('wbstate:'+"onerror")
-		$("#log").html('wb error, refresh the page please')
+		$("#log").html('wb error, 刷新一下谢谢')
 	}
 	websocket.onclose = function(evt) {
 		if (intentclose) {
 			$("#wbstate").html('wbstate:'+"onclose")
-			$("#log").html('force to be offline, this behavior is intended, so I WILL NOT try to reconnect. this may be cause by multiple-login. login again thanks.')
+			$("#log").html('这是强制下线, 我不会帮你重连的哦, 重新登录吧.')
 			return;
 		}
 		if (reconnectTimes > 6) {
 			$("#wbstate").html('wbstate:'+"onclose")
-			$("#log").html('reconnect 6 times and not result.please relogin later.')
+			$("#log").html('尝试重连了6次还是不行,重新登录看看吧.')
 			return;
 		}
 		reconnectTimes++
 		$("#wbstate").html('wbstate:'+"onclose")
-		$("#log").html('offline, now try to reconnect')
+		$("#log").html('短线了!我现在帮你重连!')
 		setTimeout(wbstart, 5000)
 	}
 }
