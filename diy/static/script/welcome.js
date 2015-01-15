@@ -49,6 +49,7 @@ function level_2_display() {
 }
 
 function sendsendCon() {
+	$("#clear").removeAttr("disabled")
 	if (lineAmount > 500) {
 		$("#errormessage").html("画的线最多500条哦 刷新重新画一次吧")
 		sendCon = []
@@ -58,7 +59,7 @@ function sendsendCon() {
 	websocket.send(JSON.stringify({data:sendCon, type:"lines"}));
 	canvasUsers[$('#name').html()]["lines"].push(sendCon)
 	sendCon = []
-	$("#clear").removeAttr("disabled")
+
 }
 $(document).ready(function() {
 	level_1_display()
@@ -84,7 +85,7 @@ $(document).ready(function() {
     	
     	sendYet = false;
     	$("#ispress").html("yes")
-    	$("#sendYet").html("wait to send")
+    	$("#sendYet").html("准备发送笔迹")
     	var elm = $(this).offset();
     	oldx = event.pageX-elm.left;
   		oldy = event.pageY-elm.top;
@@ -119,7 +120,7 @@ $(document).ready(function() {
 			console.log('gonna shot.')
 			
 			sendsendCon()
-			$("#sendYet").html("sendYet")
+			$("#sendYet").html("笔迹已发送")
 		}, waitingTime)
     	//$('.clickstatus').text('mouseup');
     	//$('.movestatus').text('click released, no more move event');
@@ -136,7 +137,7 @@ $(document).ready(function() {
     	
     	sendYet = false;
     	$("#ispress").html("yes")
-    	$("#sendYet").html("wait to send")
+    	$("#sendYet").html("准备发送笔迹")
 
     	
     	e.preventDefault();
@@ -183,7 +184,7 @@ $(document).ready(function() {
 			console.log('gonna shot.')
 			
 			sendsendCon()
-			$("#sendYet").html("sendYet")
+			$("#sendYet").html("笔迹已发送")
 		}, waitingTime)
       	//console.log(touch.pageY+' '+touch.pageX);
 	} });
