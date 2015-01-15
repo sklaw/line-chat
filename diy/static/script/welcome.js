@@ -460,9 +460,13 @@ function wbstart() {
 		$("#onmessagetype").html('onmessage type:'+data["type"])
 
 		missionqueue.push(data)
-
+		console.log(idle)
 		if (idle) {
 			processMission()
+		}
+		else {
+			console.log("things in queue:")
+			console.log(missionqueue)
 		}
 		
 		//
