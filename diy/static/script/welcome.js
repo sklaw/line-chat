@@ -498,8 +498,11 @@ function processMission() {
 		idle = true;
 	}
 	else {
+		console.log("detect sth in the queue:")
+		var data = missionqueue.shift()
+		console.log(data)
 		idle = false;
-		onmessageHandler(missionqueue.shift())
+		onmessageHandler(data)
 	}
 }
 
