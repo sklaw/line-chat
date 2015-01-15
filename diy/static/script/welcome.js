@@ -58,6 +58,7 @@ function sendsendCon() {
 	websocket.send(JSON.stringify({data:sendCon, type:"lines"}));
 	canvasUsers[$('#name').html()]["lines"].push(sendCon)
 	sendCon = []
+	$("#clear").removeAttr("disabled")
 }
 $(document).ready(function() {
 	level_1_display()
@@ -75,6 +76,7 @@ $(document).ready(function() {
 
 
 	$('#myCanvas').mousedown(function(event){
+		$("#clear").attr("disabled", "disabled")
 		clearInterval(timerRecord)
 		clearTimeout(timerSend)
 		$("#message").html("mousedown")
@@ -126,6 +128,7 @@ $(document).ready(function() {
 	
 
 	$('#myCanvas').on({ 'touchstart' : function(e){
+		$("#clear").attr("disabled", "disabled")
 		clearInterval(timerRecord)
 		$("#message").html("touchstart")
 		clearTimeout(timerSend)
