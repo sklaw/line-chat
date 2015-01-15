@@ -611,6 +611,7 @@ function onmessageHandler(data) {
 			for (var i = 0; i < linespack.length; i++) {
 				handleLinePatch(linespack[i])
 			}
+			onmessageDone()
 		}
 }
 
