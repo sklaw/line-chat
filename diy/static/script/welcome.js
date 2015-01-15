@@ -642,22 +642,23 @@ function linesHandler(data) {
 }
 
 function clearLines() {
-	
+	console.log("in clearlines")
 	var i = 255;
 	var t = setInterval(function () {
 		if (i < 0) {
-			
+			console.log("black-lize finished")
 			clearInterval(t)
 			ctx.beginPath();
 			
 			ctx.clearRect(0,0,c.width,c.height)
 			
 			redrawExcept()
-			
+			console.log("redraw finished")
 			i = 0;
-			t = setInterval(function() {
+			var t2 = setInterval(function() {
 				if (i == 255) {
-					clearInterval(t)
+					console.log("de-black-lize finished")
+					clearInterval(t2)
 					onmessageDone()
 				}
 				str = i.toString()
