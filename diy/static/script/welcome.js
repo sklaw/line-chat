@@ -589,11 +589,11 @@ function onmessageHandler(data) {
 			var creator = canvasinfo["creator"]
 			var members = canvasinfo['members']
 			$("#canvasinfoBlock").empty()
-			var p = $("<p></p>").html("canvas name:"+canvasinfo['canvasname'])
+			var p = $("<p></p>").html("画布名:"+canvasinfo['canvasname'])
 			$("#canvasinfoBlock").append(p)
-			p = $("<p></p>").html("creator:"+creator)
+			p = $("<p></p>").html("画布主人:"+creator)
 			$("#canvasinfoBlock").append(p)
-			p = $("<p></p>").html("members:"+members[0])
+			p = $("<p></p>").html("画布成员:"+members[0])
 			for (var i = 1; i < members.length; i++) {
 				p.html(p.html()+", "+members[i])
 			}
