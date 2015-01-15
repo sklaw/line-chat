@@ -74,7 +74,8 @@ $(document).ready(function() {
 	})
 
 
-	$('#myCanvas').bind('mousedown', function(event){
+	$('#myCanvas').mousedown(function(event){
+		clearInterval(timerRecord)
 		clearTimeout(timerSend)
 		$("#message").html("mousedown")
     	clicking = true;
@@ -94,7 +95,7 @@ $(document).ready(function() {
 
 	
 
-	$("#myCanvas").bind('mousemove', function(event) {
+	$("#myCanvas").mousemove(function(event) {
 		$("#message").html("mousemove")
 		var elm = $(this).offset();
 		if (clicking)	{
@@ -107,7 +108,7 @@ $(document).ready(function() {
 	})
 
 
-	$("#myCanvas").bind('mouseup', function(){
+	$("#myCanvas").mouseup(function(){
 		clearInterval(timerRecord)
 		$("#message").html("mouseup")
     	clicking = false;
@@ -125,6 +126,7 @@ $(document).ready(function() {
 	
 
 	$('#myCanvas').on({ 'touchstart' : function(e){
+		clearInterval(timerRecord)
 		$("#message").html("touchstart")
 		clearTimeout(timerSend)
 		$("#message").html("mousedown")
