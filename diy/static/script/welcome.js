@@ -495,6 +495,8 @@ function wbstart() {
 
 function processMission() {
 	if (missionqueue.length == 0) {
+		console.log(missionqueue)
+		console.log("nothing in the queue now: set idle")
 		idle = true;
 	}
 	else {
@@ -633,6 +635,7 @@ function linesHandler(data) {
 		if (i >= data.length) {
 			clearInterval(timer)
 			$("#result").html("wb waiting.")
+			console.log("handled one lines")
 			onmessageDone()
 			return
 		}
