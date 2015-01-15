@@ -62,6 +62,17 @@ function sendsendCon() {
 
 }
 $(document).ready(function() {
+	window.WebSocket = window.WebSocket || window.MozWebSocket
+	if (!window.WebSocket) {
+		alert("这个浏览器不支持相关技术哦")
+		return;
+	}
+
+
+
+
+
+
 	level_1_display()
 	$("button").removeAttr("disabled")
 	setTimeout(wbstart, 100)
