@@ -63,6 +63,7 @@ $(document).ready(function() {
 	level_1_display()
 	$("button").removeAttr("disabled")
 	setTimeout(wbstart, 100)
+	idle = true;
 	$("p").each(function() {
 		$(this).css({
 			'MozUserSelect':'none',
@@ -439,7 +440,7 @@ function draw() {
 function wbstart() {
 	var host = "wss://test3-sklaw.rhcloud.com:8443/share";
 	//var host = "ws://192.168.1.207:8080/share";
-
+	idle = true;
 	$("#wbstate").html('wbstate:'+"正努力连接到服务器")
 	$("button").attr("disabled", "disabled")
 	websocket = new WebSocket(host);
