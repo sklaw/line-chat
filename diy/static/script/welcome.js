@@ -174,18 +174,20 @@ $(document).ready(function() {
 		e.preventDefault();
       	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
       	var elm = $(this).offset();
-      	var x = touch.pageX - elm.left;
-      	var y = touch.pageY - elm.top;
+      	newx = touch.pageX - elm.left;
+      	newy = touch.pageY - elm.top;
       	
-      	if(x < $(this).width() && x > 0){
-          	if(y < $(this).height() && y > 0){
+
+
+
+      	//if(x < $(this).width() && x > 0){
+        //  	if(y < $(this).height() && y > 0){
           		
-          		newx = x
-  				newy = y
+          		
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
-          	}
-      	}
+        // 	}
+      	//}
       	//console.log(touch.pageY+' '+touch.pageX);
 
 	} });
@@ -463,6 +465,7 @@ function draw() {
 
 
 function draw2(ox, oy) {
+	ctx.beginPath(); 
 	ctx.moveTo(ox,oy);
 	
 	ctx.lineTo(newx,newy);
@@ -684,6 +687,7 @@ function linesHandler(data) {
 			return
 		}
 		$("#result").html("wb onmessage:"+data[i])
+		ctx.beginPath(); 
 		ctx.moveTo(data[i]['oldx'],data[i]['oldy']);
 		ctx.lineTo(data[i]['newx'],data[i]['newy']);
 		
@@ -742,6 +746,7 @@ function drawLinesOfSomeone(lineslist) {
 
 function drawOneLineFast(linedata) {
 	for (var i = 0; i < linedata.length; i++) {
+		ctx.beginPath(); 
 		ctx.moveTo(linedata[i]['oldx'],linedata[i]['oldy']);
 		ctx.lineTo(linedata[i]['newx'],linedata[i]['newy']);
 		ctx.stroke();
