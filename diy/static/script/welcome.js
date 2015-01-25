@@ -23,12 +23,16 @@ var canvasUsers = {}
 
 var invitedAmount = 0
 
-var recordF = 50
+var recordF = 10
+var lagF = 100
+var lineWidth = 10;
 
-var waitingTime = 3000;
+var waitingTime = 500;
 
 var missionqueue = []
 var idle = true;
+
+var lineAmountLimit = 2000;
 
 function level_1_display() {
 	$(".level2").hide()
@@ -50,8 +54,8 @@ function level_2_display() {
 
 function sendsendCon() {
 	$("#clear").removeAttr("disabled")
-	if (lineAmount > 500) {
-		$("#errormessage").html("画的线最多500条哦 刷新重新画一次吧")
+	if (lineAmount > lineAmountLimit) {
+		$("#errormessage").html("画的线最多2000条哦 刷新重新画一次吧")
 		sendCon = []
 		return
 	}
@@ -113,8 +117,8 @@ $(document).ready(function() {
 		$("#message").html("mousemove")
 		var elm = $(this).offset();
 		if (clicking)	{
-  			oldx = event.pageX-elm.left;
-  			oldy = event.pageY-elm.top;
+  			newx = event.pageX-elm.left;
+  			newy = event.pageY-elm.top;
 		}
 		else {
 			
@@ -176,8 +180,8 @@ $(document).ready(function() {
       	if(x < $(this).width() && x > 0){
           	if(y < $(this).height() && y > 0){
           		
-          		oldx = x
-  				oldy = y
+          		newx = x
+  				newy = y
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
           	}
@@ -329,7 +333,7 @@ $(document).ready(function() {
 	c = document.getElementById("myCanvas");
 
 	ctx = c.getContext("2d");
-	ctx.lineWidth = 5;
+	ctx.lineWidth = lineWidth;
 })
 
 function addOneInvitedUser() {
@@ -435,10 +439,10 @@ function addOneInvitedUser() {
 		invitedAmount++
 }
 
-function draw() {
-	ctx.moveTo(newx,newy);
+/*function draw() {
+	ctx.moveTo(oldx,oldy);
 	
-	ctx.lineTo(oldx,oldy);
+	ctx.lineTo(newx,newy);
 	ctx.stroke();
 
 	lineAmount++;
@@ -449,14 +453,36 @@ function draw() {
 	obj["newx"] = newx;
 	obj["newy"] = newy;
 	sendCon.push(obj)
-	newx = oldx
-	newy = oldy
+	oldx = newx
+	oldy = newy
+}*/
+
+function draw() {
+	setTimeout(draw2, lagF, newx, newy)
+}
+
+
+function draw2(ox, oy) {
+	ctx.moveTo(ox,oy);
+	
+	ctx.lineTo(newx,newy);
+	ctx.stroke();
+
+	lineAmount++;
+	$("#lineAmount").html(lineAmount.toString())
+	var obj = {}
+	obj["oldx"] = ox;
+	obj["oldy"] = oy;
+	obj["newx"] = newx;
+	obj["newy"] = newy;
+	sendCon.push(obj)
 }
 
 
 function wbstart() {
 	var host = "wss://test3-sklaw.rhcloud.com:8443/share";
 	//var host = "ws://192.168.1.207:8080/share";
+	//var host = "ws://192.168.1.104:8080/share";
 	idle = true;
 	$("#wbstate").html('wbstate:'+"正努力连接到服务器")
 	$("button").attr("disabled", "disabled")
