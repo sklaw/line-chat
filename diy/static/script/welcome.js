@@ -594,6 +594,7 @@ function onmessageHandler(data) {
 			}
 		}
 		else if (data['type'] == 'canvaslist') {
+			level_1_display();
 			$("button").removeAttr("disabled")
 			canvasimin = data['data']['imin']
 			canvasicreate = data['data']['icreate']
