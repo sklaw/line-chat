@@ -322,9 +322,9 @@ $(document).ready(function() {
     	}
     })
 	$("#gobacktocanvaslistpage").click(function() {
-		$("button").attr("disabled", "disabled")
+		//$("button").attr("disabled", "disabled")
 		console.log("gobacktocanvaslistpage click")
-		window.location.href = "/";
+		level_1_display();
 	})
 	$("#dismissCanvas").click(function() {
 		$("button").attr("disabled", "disabled")
