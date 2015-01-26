@@ -622,6 +622,7 @@ function onmessageHandler(data) {
 			onmessageDone()
 		}
 		else if (data['type'] == 'canvaspack') {
+			ctx.clearRect(0,0,c.width,c.height)
 			lineAmount = 0
 			level_2_display()
 			$("button").removeAttr("disabled")
