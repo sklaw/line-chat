@@ -9,3 +9,13 @@ input {
 button {
 	font-size: 30pt;
 }
+
+#ctlBanner {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: 15%;
+	width: 100%;
+	background-color: red;
+}
+

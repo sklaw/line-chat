@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="{{static_url("script/welcome.js")}}"></script>
 </head>
 <body>
+	<div id="ctlBanner" class="level2">点击切换作图模式 绿色开启 红色关闭</div>
 	<p id="name">{{name}}</p>
 
 	<div class="level2 level1_1">
@@ -42,6 +43,7 @@
 
 	<div class="level2">
 		画的线最多2000条哦
+		
 		<div id="canvasinfoBlock"></div>
 		<div>
 			<button id="dismissCanvas">删除这个画布</button>
@@ -59,17 +61,13 @@
 		<p id="wbstate"></p>
 		<p id="errormessage"></p>
 		<p id="log"></p>
-		
-		
 		<p id="message"></p>
-		
-		
-		
-		
 		<p id="result"></p>
 		<p id="onmessagetype"></p>
 		<p id="ispress"></p>
 		<p id="cord"></p>
+		<p id="windowhw"></p>
+		<p id="zoomstatus"></p>
 	</div>
 </body>
 

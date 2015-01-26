@@ -25,7 +25,7 @@ var invitedAmount = 0
 
 var recordF = 10
 var lagF = 100
-var lineWidth = 10;
+var lineWidth = 1;
 
 var waitingTime = 500;
 
@@ -34,19 +34,24 @@ var idle = true;
 
 var lineAmountLimit = 2000;
 
+var drawabale = false;
+
 function level_1_display() {
+	$("#name").css("margin-top", "0%")
 	$(".level2").hide()
 	$(".level1_1").hide()
 	$(".level1").show()
 }
 
 function level_1_1_display() {
+	$("#name").css("margin-top", "0%")
 	$(".level2").hide()
 	$(".level1").hide()
 	$(".level1_1").show()
 }
 
 function level_2_display() {
+	$("#name").css("margin-top", "25%")
 	$(".level1_1").hide()
 	$(".level1").hide()
 	$(".level2").show()
@@ -65,34 +70,24 @@ function sendsendCon() {
 	sendCon = []
 
 }
-$(document).ready(function() {
-	window.WebSocket = window.WebSocket || window.MozWebSocket
-	if (!window.WebSocket) {
-		alert("这个浏览器不支持相关技术哦")
-		return;
-	}
 
+function mouseUpHandler(event){
+		clearInterval(timerRecord)
+		$("#message").html("mouseup")
+    	clicking = false;
+    	$("#ispress").html("no")
+		timerSend = setTimeout(function() {
+			console.log('gonna shot.')
+			
+			sendsendCon()
+			$("#sendYet").html("笔迹已发送")
+		}, waitingTime)
+    	//$('.clickstatus').text('mouseup');
+    	//$('.movestatus').text('click released, no more move event');
+}
 
-
-
-
-
-	level_1_display()
-	$("button").removeAttr("disabled")
-	setTimeout(wbstart, 100)
-	idle = true;
-	$("p").each(function() {
-		$(this).css({
-			'MozUserSelect':'none',
-			'webkitUserSelect':'none'
-		}).attr('unselectable','on').bind('selectstart', function() {
-			return false;
-		});
-	})
-
-
-	$('#myCanvas').mousedown(function(event){
-		$("#clear").attr("disabled", "disabled")
+function mouseDownHandler(event) {
+	$("#clear").attr("disabled", "disabled")
 		clearInterval(timerRecord)
 		clearTimeout(timerSend)
 		$("#message").html("mousedown")
@@ -109,42 +104,10 @@ $(document).ready(function() {
 
     	//$('.clickstatus').text('mousedown');
     	timerRecord = setInterval(draw, recordF)
-	});
+}
 
-	
-
-	$("#myCanvas").mousemove(function(event) {
-		$("#message").html("mousemove")
-		var elm = $(this).offset();
-		if (clicking)	{
-  			newx = event.pageX-elm.left;
-  			newy = event.pageY-elm.top;
-		}
-		else {
-			
-		}
-	})
-
-
-	$("#myCanvas").mouseup(function(){
-		clearInterval(timerRecord)
-		$("#message").html("mouseup")
-    	clicking = false;
-    	$("#ispress").html("no")
-		timerSend = setTimeout(function() {
-			console.log('gonna shot.')
-			
-			sendsendCon()
-			$("#sendYet").html("笔迹已发送")
-		}, waitingTime)
-    	//$('.clickstatus').text('mouseup');
-    	//$('.movestatus').text('click released, no more move event');
-	})
-
-	
-
-	$('#myCanvas').on({ 'touchstart' : function(e){
-		$("#clear").attr("disabled", "disabled")
+function touchStartHandler(e) {
+	$("#clear").attr("disabled", "disabled")
 		clearInterval(timerRecord)
 		$("#message").html("touchstart")
 		clearTimeout(timerSend)
@@ -168,9 +131,21 @@ $(document).ready(function() {
   		oldy = y
     	//$('.clickstatus').text('mousedown');
     	timerRecord = setInterval(draw, recordF)
-	} });
+}
 
-	$('#myCanvas').on({ 'touchmove' : function(e){
+function mouseMoveHandler(event) {
+		$("#message").html("mousemove")
+		var elm = $(this).offset();
+		if (clicking)	{
+  			newx = event.pageX-elm.left;
+  			newy = event.pageY-elm.top;
+		}
+		else {
+			
+		}
+}
+
+function touchMoveHandler(e){
 		e.preventDefault();
       	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
       	var elm = $(this).offset();
@@ -190,21 +165,60 @@ $(document).ready(function() {
       	//}
       	//console.log(touch.pageY+' '+touch.pageX);
 
-	} });
+} 
 
-	$('#myCanvas').on({ 'touchend' : function(e){
-		clearInterval(timerRecord)
-		$("#message").html("mouseup")
-    	
-    	$("#ispress").html("no")
-		timerSend = setTimeout(function() {
-			console.log('gonna shot.')
-			
-			sendsendCon()
-			$("#sendYet").html("笔迹已发送")
-		}, waitingTime)
-      	//console.log(touch.pageY+' '+touch.pageX);
-	} });
+function bindDrawEvents() {
+	$('#myCanvas').mousedown(mouseDownHandler);
+	$("#myCanvas").mousemove(mouseMoveHandler)
+	$("#myCanvas").mouseup(mouseUpHandler)
+	$('#myCanvas').on({ 'touchstart' : touchStartHandler});
+	$('#myCanvas').on({ 'touchmove' : touchMoveHandler});
+	$('#myCanvas').on({ 'touchend' : mouseUpHandler});
+}
+
+function unbindDrawEvents() {
+	$('#myCanvas').unbind();
+}
+$(document).ready(function() {
+	window.WebSocket = window.WebSocket || window.MozWebSocket
+	if (!window.WebSocket) {
+		alert("这个浏览器不支持相关技术哦")
+		return;
+	}
+
+	unbindDrawEvents();
+	$("#ctlBanner").click(function() {
+		if (drawabale) {
+			drawabale = false;
+			$(this).css("background-color", "red");
+			unbindDrawEvents();
+		}
+		else {
+			drawabale = true;
+			$(this).css("background-color", "green");
+			bindDrawEvents();
+		}
+	})
+	$(window).scroll(bannerPostioning)
+	$(window).resize(bannerPostioning)
+	
+	$("#zoomstatus").html("zoom zone");
+
+	level_1_display()
+	$("button").removeAttr("disabled")
+	setTimeout(wbstart, 100)
+	idle = true;
+	$("p").each(function() {
+		$(this).css({
+			'MozUserSelect':'none',
+			'webkitUserSelect':'none'
+		}).attr('unselectable','on').bind('selectstart', function() {
+			return false;
+		});
+	})
+
+
+	
 
 
 	$('#clear').click(function(e) {
@@ -337,6 +351,17 @@ $(document).ready(function() {
 	ctx = c.getContext("2d");
 	ctx.lineWidth = lineWidth;
 })
+
+function bannerPostioning() {
+	console.log("in bannerPostioning")
+	console.log(window.pageXOffset+'px')
+	console.log(window.pageYOffset+'px')
+	console.log(window.innerHeight)
+	$("#ctlBanner").css("height", window.innerHeight*0.15)
+		.css("left", window.pageXOffset+'px')
+		.css("top", window.pageYOffset+'px')
+}
+
 
 function addOneInvitedUser() {
 		console.log("add one invited user")
@@ -623,6 +648,8 @@ function onmessageHandler(data) {
 		}
 		else if (data['type'] == 'canvaspack') {
 			clearFormerCanvaspack()
+			
+			
 			level_2_display()
 			$("button").removeAttr("disabled")
 			var linespack = data['linespack']
