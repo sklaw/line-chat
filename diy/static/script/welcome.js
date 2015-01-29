@@ -50,6 +50,8 @@ var fontSizeRatio = 0.05;
 
 var levelmark;
 
+var stdFontSize;
+
 function level_1_display() {
 	$("#name").css("margin-top", "0%")
 	$(".level2").hide()
@@ -214,8 +216,8 @@ $(document).ready(function() {
 		return;
 	}
 
-
-	$("*").css("font-size", $(window).height()*fontSizeRatio)
+	stdFontSize = $(window).height()*fontSizeRatio
+	$("*").css("font-size", stdFontSize)
 
 	unbindDrawEvents();
 
@@ -484,7 +486,7 @@ function bannerPostioning() {
 		.css("left", window.pageXOffset+'px')
 		.css("top", window.pageYOffset+'px')
 		
-	$(".ctlBannerBlock select,p").css("font-size", window.innerWidth*fontSizeRatio)
+	$(".ctlBannerBlock select,.ctlBannerBlock p").css("font-size", window.innerWidth*fontSizeRatio)
 
 
 	$(".ctlBannerBlock").css("width", window.innerWidth*0.25)
@@ -604,7 +606,7 @@ function addOneInvitedUser() {
 
 		$(div).insertBefore("#submitInvitedUser");
 		invitedAmount++
-		$("*").css("font-size", $(window).height()*fontSizeRatio)
+		$("*").css("font-size", stdFontSize)
 }
 
 /*function draw() {
@@ -832,7 +834,7 @@ function onmessageHandler(data) {
 
 			$("button").removeAttr("disabled")
 			onmessageDone()
-			$("*").css("font-size", $(window).height()*fontSizeRatio)
+			$("*").css("font-size", stdFontSize)
 		}
 		else if (data['type'] == 'canvaspack') {
 			clearFormerCanvaspack()
@@ -859,7 +861,7 @@ function onmessageHandler(data) {
 			$("#canvasinfoBlock").append(p)
 
 
-			$("*").css("font-size", $(window).height()*fontSizeRatio)
+			$("*").css("font-size", stdFontSize)
 			members.push(creator)
 			if ($('#name').html() == creator) {
 				addDismissButton()
@@ -1016,7 +1018,7 @@ function displaycanvaslist(canvaslist, seletor, lastVisitList, lastEditedTimeLis
 		console.log("adding a canvas button")
 		$(seletor).append(button)
 	}
-	$("*").css("font-size", $(window).height()*fontSizeRatio)
+	$("*").css("font-size", stdFontSize)
 }
 
 function handleLinePatch(linepatch) {
