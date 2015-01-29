@@ -28,6 +28,10 @@
 .ctlBannerBlock {
 	width: 25%;
 	height: 100%;
+	
+}
+
+.ctlBannerBlock:not([id=drawSwitch]) {
 	float: left;
 }
 
@@ -51,7 +55,6 @@
 
 #drawSwitch {
 	left:75%;
-	width: 100%;
 	position: absolute;
 	background-color: red;
 }

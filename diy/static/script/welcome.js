@@ -490,6 +490,7 @@ function bannerPostioning() {
 
 
 	$(".ctlBannerBlock").css("width", window.innerWidth*0.25)
+
 	$("#drawSwitch").css("left", window.innerWidth*0.75+'px')
 		.css("top", 0+'px')
 
