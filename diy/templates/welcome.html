@@ -9,25 +9,77 @@
 	<script type="text/javascript" src="{{static_url("script/welcome.js")}}"></script>
 </head>
 <body>
-	<div id="ctlBanner" class="level2">点击切换作图模式 绿色开启 红色关闭</div>
+	<div id="ctlBanner" class="level2">
+		
+		<div id="colorPan" class="ctlBannerBlock">
+			<div>
+				<p>笔迹颜色</p>
+				<select>
+					<option selected>black</option>
+					<option>red</option>
+					<option>blue</option>
+					<option>pink</option>
+					<option>chocolate</option>
+					<option>yellow</option>
+					<option>gold</option>
+					<option>olive</option>
+					<option>green</option>
+				</select>
+			</div>
+		</div>
+		<div id="widthCtl" class="ctlBannerBlock">
+			<div>
+				<p>笔迹粗细</p>
+				<select>
+					<option>1</option>
+					<option>5</option>
+					<option selected>10</option>
+				</select>
+			</div>
+		</div>
+		<div id="penType" class="ctlBannerBlock">
+			<div>
+				<p>笔的类型</p>
+				<select>
+					<option selected>假装·毛笔</option>
+					<option>真·普通笔</option>
+				</select>
+			</div>
+		</div>
+		<div id="drawSwitch" class="ctlBannerBlock"></div>
+	</div>
+
+
 	<p id="name">{{name}}</p>
+
 
 	<div class="level2 level1_1">
 		<button id="gobacktocanvaslistpage">返回上一层</button>
 	</div>
 
+
 	<div class="level1">
 		<button id="logout">退出登陆</button>
-		<div>
+	</div>
+
+
+	<div>
+		<div id="canvaslist">
 			我的画布:
 			<div id="canvasicreate"></div>
 			别人邀请我参加的画布:
 			<div id='canvasimin'></div>
 			<br>
 		</div>
+	</div>
+
+
+	<div class="level1">
 		<button  id="createNewCanvas">创建一个新画布</button>
 		<span></span>
 	</div>
+
+
 	<div class="level1_1" id="level1_1_Block">
 		<div>
 			画布名字:

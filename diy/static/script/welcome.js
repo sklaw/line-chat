@@ -24,8 +24,14 @@ var canvasUsers = {}
 var invitedAmount = 0
 
 var recordF = 10
-var lagF = 100
-var lineWidth = 1;
+
+var maoBi = 100
+var normalBi = recordF
+var lagF = maoBi
+
+var lineWidth = 10;
+var lineColor = "#000000"
+
 
 var waitingTime = 500;
 
@@ -36,11 +42,20 @@ var lineAmountLimit = 2000;
 
 var drawabale = false;
 
+var lineLongerThan = 3;
+
+var holdToBeLonger = false;
+
+var fontSizeRatio = 0.05;
+
+var levelmark;
+
 function level_1_display() {
 	$("#name").css("margin-top", "0%")
 	$(".level2").hide()
 	$(".level1_1").hide()
 	$(".level1").show()
+	levelmark = "1"
 }
 
 function level_1_1_display() {
@@ -48,6 +63,7 @@ function level_1_1_display() {
 	$(".level2").hide()
 	$(".level1").hide()
 	$(".level1_1").show()
+	levelmark = "1_1"
 }
 
 function level_2_display() {
@@ -55,18 +71,25 @@ function level_2_display() {
 	$(".level1_1").hide()
 	$(".level1").hide()
 	$(".level2").show()
+	levelmark = "2"
 }
 
 function sendsendCon() {
 	$("#clear").removeAttr("disabled")
 	if (lineAmount > lineAmountLimit) {
-		$("#errormessage").html("画的线最多2000条哦 刷新重新画一次吧")
+		$("#errormessage").html("画的线最多"+lineAmountLimit.toString()+"条哦 刷新重新画一次吧")
 		sendCon = []
 		return
 	}
+	if (sendCon.length == 0) {
+		return
+	}
 	$("#errormessage").html("")
-	websocket.send(JSON.stringify({data:sendCon, type:"lines"}));
-	canvasUsers[$('#name').html()]["lines"].push(sendCon)
+	console.log(sendCon)
+	console.log('gonna shot.')
+	websocket.send(JSON.stringify({data:sendCon, type:"line", lineWidth:lineWidth, lineColor:lineColor}));
+	canvasUsers[$('#name').html()]["lines"].push({data:sendCon, lineWidth:lineWidth, lineColor:lineColor})
+	$("#sendYet").html("笔迹已发送")
 	sendCon = []
 
 }
@@ -77,10 +100,10 @@ function mouseUpHandler(event){
     	clicking = false;
     	$("#ispress").html("no")
 		timerSend = setTimeout(function() {
-			console.log('gonna shot.')
+			
 			
 			sendsendCon()
-			$("#sendYet").html("笔迹已发送")
+			
 		}, waitingTime)
     	//$('.clickstatus').text('mouseup');
     	//$('.movestatus').text('click released, no more move event');
@@ -149,20 +172,21 @@ function touchMoveHandler(e){
 		e.preventDefault();
       	var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
       	var elm = $(this).offset();
-      	newx = touch.pageX - elm.left;
-      	newy = touch.pageY - elm.top;
+      	x = touch.pageX - elm.left;
+      	y = touch.pageY - elm.top;
       	
 
 
 
-      	//if(x < $(this).width() && x > 0){
-        //  	if(y < $(this).height() && y > 0){
-          		
+      	if(x < $(this).width() && x > 0){
+          	if(y < $(this).height() && y > 0){
+          		newx = x;
+      			newy = y;
           		
                 //CODE GOES HERE
                 //console.log(touch.pageY+' '+touch.pageX);
-        // 	}
-      	//}
+         	}
+      	}
       	//console.log(touch.pageY+' '+touch.pageX);
 
 } 
@@ -171,6 +195,8 @@ function bindDrawEvents() {
 	$('#myCanvas').mousedown(mouseDownHandler);
 	$("#myCanvas").mousemove(mouseMoveHandler)
 	$("#myCanvas").mouseup(mouseUpHandler)
+	$("#myCanvas").mouseout(mouseUpHandler)
+	//$("#myCanvas").mouseenter(mouseDownHandler)
 	$('#myCanvas').on({ 'touchstart' : touchStartHandler});
 	$('#myCanvas').on({ 'touchmove' : touchMoveHandler});
 	$('#myCanvas').on({ 'touchend' : mouseUpHandler});
@@ -179,6 +205,8 @@ function bindDrawEvents() {
 function unbindDrawEvents() {
 	$('#myCanvas').unbind();
 }
+
+
 $(document).ready(function() {
 	window.WebSocket = window.WebSocket || window.MozWebSocket
 	if (!window.WebSocket) {
@@ -186,8 +214,13 @@ $(document).ready(function() {
 		return;
 	}
 
+
+	$("*").css("font-size", $(window).height()*fontSizeRatio)
+
 	unbindDrawEvents();
-	$("#ctlBanner").click(function() {
+
+
+	$("#drawSwitch").click(function() {
 		if (drawabale) {
 			drawabale = false;
 			$(this).css("background-color", "red");
@@ -199,6 +232,82 @@ $(document).ready(function() {
 			bindDrawEvents();
 		}
 	})
+
+
+
+
+
+
+
+
+	var colorPanFlag = false;
+	$(".ctlBannerBlock:not([id=drawSwitch])").click(
+		function () {
+			console.log("in ctlBannerBlock")
+			console.log($(this).attr("id"))
+  			if (colorPanFlag) {
+  				$(".ctlBannerBlock>div").hide();
+  				colorPanFlag = false;
+  			}
+  			else {
+  				$("#"+$(this).attr("id")+">div")
+  					.css("background-color", $(this).css("background-color"))
+					.css("left", 0)
+  					.css("top", '100%')
+  					.show()
+  				colorPanFlag = true;
+  			}
+  		}
+	);
+
+	$("#colorPan select").change(function() {
+		console.log("colorPan select changed")
+		console.log($(this).val())
+		lineColor = $(this).val()
+		ctx.strokeStyle = lineColor
+		$(".ctlBannerBlock>div").hide();
+		colorPanFlag = false;
+	})
+
+	$("#colorPan option").each(function() {
+		$(this).css("background-color", $(this).val())
+		console.log($(this).val())
+	})
+
+
+
+
+	$("#widthCtl select").change(function() {
+		console.log("widthCtl select changed")
+		console.log($(this).val())
+		lineWidth = parseInt($(this).val())
+		ctx.lineWidth = lineWidth
+		$(".ctlBannerBlock>div").hide();
+		colorPanFlag = false;
+	})
+
+	$("#penType select").change(function() {
+		console.log("penType select changed")
+		console.log($(this).val())
+		if ($(this).val() == "毛笔") {
+			lagF = maoBi
+		}
+		else {
+			lagF = normalBi
+		}
+		$(".ctlBannerBlock>div").hide();
+		colorPanFlag = false;
+	})
+
+
+	$(".ctlBannerBlock>div").hide()
+
+
+	$(".ctlBannerBlock>div").click(function () {
+		return false;
+	})
+
+
 	$(window).scroll(bannerPostioning)
 	$(window).resize(bannerPostioning)
 	
@@ -208,7 +317,11 @@ $(document).ready(function() {
 	$("button").removeAttr("disabled")
 	setTimeout(wbstart, 100)
 	idle = true;
-	$("p").each(function() {
+
+
+
+
+	$("body").each(function() {
 		$(this).css({
 			'MozUserSelect':'none',
 			'webkitUserSelect':'none'
@@ -234,6 +347,7 @@ $(document).ready(function() {
 		document.cookie = 'username' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 		window.location.href = "/";
 	})
+
 	$("#createNewCanvas").click(function(){
 		$("button").attr("disabled", "disabled")
 		$.ajax({
@@ -271,6 +385,8 @@ $(document).ready(function() {
 			}
 		})
 	})
+
+
 	$("#moreInvitedUser").click(addOneInvitedUser)
 	$("#createcanvasname").change(function(){
 		console.log("createcanvasname changed.")
@@ -337,6 +453,9 @@ $(document).ready(function() {
     })
 	$("#gobacktocanvaslistpage").click(function() {
 		//$("button").attr("disabled", "disabled")
+		if (levelmark == "2") {
+			websocket.send(JSON.stringify({data:"leavecanvas", type:"action"}))
+		}
 		console.log("gobacktocanvaslistpage click")
 		level_1_display();
 	})
@@ -350,17 +469,38 @@ $(document).ready(function() {
 
 	ctx = c.getContext("2d");
 	ctx.lineWidth = lineWidth;
+	ctx.strokeStyle = lineColor;
 })
 
+//var bannerPostioningTimer;
+
 function bannerPostioning() {
-	console.log("in bannerPostioning")
-	console.log(window.pageXOffset+'px')
-	console.log(window.pageYOffset+'px')
-	console.log(window.innerHeight)
+	
+	//clearTimeout(bannerPostioningTimer)
+	//bannerPostioningTimer = setTimeout(bannerPostioningMeat, 0)
+
+
 	$("#ctlBanner").css("height", window.innerHeight*0.15)
 		.css("left", window.pageXOffset+'px')
 		.css("top", window.pageYOffset+'px')
+		
+	$(".ctlBannerBlock select,p").css("font-size", window.innerWidth*fontSizeRatio)
+
+
+	$(".ctlBannerBlock").css("width", window.innerWidth*0.25)
+	$("#drawSwitch").css("left", window.innerWidth*0.75+'px')
+		.css("top", 0+'px')
+
+	$(".ctlBannerBlock>div").css("width", window.innerWidth)
+  					.css("height", window.innerHeight*0.85)
 }
+
+
+
+
+//function bannerPostioningMeat() {
+	
+//}
 
 
 function addOneInvitedUser() {
@@ -464,6 +604,7 @@ function addOneInvitedUser() {
 
 		$(div).insertBefore("#submitInvitedUser");
 		invitedAmount++
+		$("*").css("font-size", $(window).height()*fontSizeRatio)
 }
 
 /*function draw() {
@@ -484,16 +625,39 @@ function addOneInvitedUser() {
 	oldy = newy
 }*/
 
+
 function draw() {
-	setTimeout(draw2, lagF, newx, newy)
+	if (holdToBeLonger) {
+		setTimeout(draw2, lagF, oldx, oldy)
+	}
+	else {
+		setTimeout(draw2, lagF, newx, newy)
+	}
 }
 
 
 function draw2(ox, oy) {
-	ctx.beginPath(); 
+	var linelength = (ox-newx)*(ox-newx)+(oy-newy)*(oy-newy);
+	console.log(linelength)
+	if (linelength < lineLongerThan) {
+		oldx = ox;
+		oldy = oy;
+		holdToBeLonger = true;
+		return;
+	}
+	else {
+		holdToBeLonger = false;
+		//console.log(linelength)
+	}
+
+	ctx.beginPath();
 	ctx.moveTo(ox,oy);
 	
 	ctx.lineTo(newx,newy);
+
+	//ctx.lineWidth = lineWidth;
+	//ctx.strokeStyle = lineColor;
+
 	ctx.stroke();
 
 	lineAmount++;
@@ -508,9 +672,18 @@ function draw2(ox, oy) {
 
 
 function wbstart() {
+	//real fight
 	var host = "wss://test3-sklaw.rhcloud.com:8443/share";
+
+	//dom
 	//var host = "ws://192.168.1.207:8080/share";
+
+	//hexi
 	//var host = "ws://192.168.1.104:8080/share";
+
+	//hedong
+	//var host = "ws://192.168.0.104:8080/share";
+
 	idle = true;
 	$("#wbstate").html('wbstate:'+"正努力连接到服务器")
 	$("button").attr("disabled", "disabled")
@@ -580,11 +753,9 @@ function processMission() {
 }
 
 function onmessageHandler(data) {
-		if (data["type"] == 'lines') {
-			//console.log(data["data"]) 
-			//console.log("lines received.")
-			linesHandler(data["data"]);
-			//onmessageDone()
+		if (data['type'] == 'turnRed') {
+			$("#canvaslist button[value="+data['data']+"]").css("background-color", "red")
+			onmessageDone()
 		}
 		else if (data['type'] == 'clearsomeone') {
 			console.log("gonna clear "+data['data']+"'s lines")
@@ -621,11 +792,15 @@ function onmessageHandler(data) {
 		else if (data['type'] == 'canvaslist') {
 			level_1_display();
 			$("button").removeAttr("disabled")
-			canvasimin = data['data']['imin']
-			canvasicreate = data['data']['icreate']
-			
-			displaycanvaslist(canvasimin, "#canvasimin")
-			displaycanvaslist(canvasicreate, "#canvasicreate")
+			var canvasimin = data['data']['imin']
+			var canvasicreate = data['data']['icreate']
+			var lastVisitList = data['data']['lastVisitList']
+			var lastEditedTimeList = data['data']['lastEditedTimeList']
+
+			console.log(canvasicreate)
+			console.log(canvasimin)
+			displaycanvaslist(canvasimin, "#canvasimin", lastVisitList, lastEditedTimeList)
+			displaycanvaslist(canvasicreate, "#canvasicreate", lastVisitList, lastEditedTimeList)
 			$(".canvaslistelm").click(function() {
 				$("button").attr("disabled", "disabled")
 				lockAll()
@@ -635,27 +810,43 @@ function onmessageHandler(data) {
 			onmessageDone()
 		}
 		else if (data['type'] == 'addcanvasoption') {
-			$("#canvasimin").append("<button class='canvaslistelm'>"+data['data']+"</button>")
-
-			$(".canvaslistelm").click(function() {
+			var button = $("<button></button>")
+			button.addClass('canvaslistelm')
+			button.html(data['data']['canvasname'])
+			button.val(data['data']['canvasname'])
+			button.css("background-color", "yellow")
+			button.click(function() {
 				lockAll()
 				console.log("asking canvas:"+$(this).html())
 				websocket.send(JSON.stringify({data:$(this).html(), type:"entercanvas"}))
 			})
 
+			if (data['data']['creator'] == $("#name").html()) {
+				$("#canvasicreate").append(button)
+			}
+			else {
+				$("#canvasimin").append(button)
+			}
+
+			
+
 			$("button").removeAttr("disabled")
 			onmessageDone()
+			$("*").css("font-size", $(window).height()*fontSizeRatio)
 		}
 		else if (data['type'] == 'canvaspack') {
 			clearFormerCanvaspack()
 			
 			
-			level_2_display()
 			$("button").removeAttr("disabled")
 			var linespack = data['linespack']
 			var canvasinfo = data['canvasinfo']
 			var creator = canvasinfo["creator"]
 			var members = canvasinfo['members']
+
+			$("button[value="+canvasinfo['canvasname']+"]").css("background-color", "")
+			level_2_display()
+
 			$("#canvasinfoBlock").empty()
 			var p = $("<p></p>").html("画布名:"+canvasinfo['canvasname'])
 			$("#canvasinfoBlock").append(p)
@@ -668,7 +859,7 @@ function onmessageHandler(data) {
 			$("#canvasinfoBlock").append(p)
 
 
-
+			$("*").css("font-size", $(window).height()*fontSizeRatio)
 			members.push(creator)
 			if ($('#name').html() == creator) {
 				addDismissButton()
@@ -683,7 +874,7 @@ function onmessageHandler(data) {
 				canvasUsers[members[i]] = obj
 			}
 			for (var i = 0; i < linespack.length; i++) {
-				handleLinePatch(linespack[i])
+				missionqueue.push({type:"linepatch", data:linespack[i]})
 			}
 			onmessageDone()
 		}
@@ -705,10 +896,11 @@ function deleteDismissButton() {
 	$("#dismissCanvas").hide()
 }
 
-function linesHandler(data) {
+function linesHandler(data, lw, lc) {
 	console.log("in linesHandler")
 	var i = 0;
-	ctx.strokeStyle = 'black';
+	ctx.strokeStyle = lc;
+	ctx.lineWidth = lw;
 	console.log(i)
 	console.log(data.length)
 	var timer = setInterval(function() {
@@ -777,13 +969,18 @@ function drawLinesOfSomeone(lineslist) {
 	}
 }
 
-function drawOneLineFast(linedata) {
+function drawOneLineFast(linedatalist) {
+	var linedata = linedatalist['data'];
+	ctx.lineWidth = linedatalist['lineWidth']
+	ctx.strokeStyle = linedatalist['lineColor']
 	for (var i = 0; i < linedata.length; i++) {
 		ctx.beginPath(); 
 		ctx.moveTo(linedata[i]['oldx'],linedata[i]['oldy']);
 		ctx.lineTo(linedata[i]['newx'],linedata[i]['newy']);
 		ctx.stroke();
 	}
+	ctx.lineWidth = lineWidth
+	ctx.strokeStyle = lineColor
 }
 
 
@@ -795,14 +992,31 @@ function onmessageDone() {
 
 
 
-function displaycanvaslist(canvaslist, seletor) {
+function displaycanvaslist(canvaslist, seletor, lastVisitList, lastEditedTimeList) {
 	console.log("in displaycanvaslist")
 	$(seletor).empty();
 	for (var i = 0; i < canvaslist.length; i++) {
+
+		var button = $("<button></button>")
+		button.addClass("canvaslistelm")
+		button.html(canvaslist[i])
+		button.val(canvaslist[i])
+		if (!(canvaslist[i] in lastVisitList)) {
+			button.css("background-color", "yellow")
+			
+		}
+		else if (canvaslist[i] in lastEditedTimeList) {
+			console.log(lastVisitList[canvaslist[i]])
+			console.log(lastEditedTimeList[canvaslist[i]])
+			if (lastVisitList[canvaslist[i]] < lastEditedTimeList[canvaslist[i]]) {
+				button.css("background-color", "red")
+			}
+		}
+
 		console.log("adding a canvas button")
-		$(seletor).append("<button class='canvaslistelm'>"+canvaslist[i]+"</button>")
+		$(seletor).append(button)
 	}
-	
+	$("*").css("font-size", $(window).height()*fontSizeRatio)
 }
 
 function handleLinePatch(linepatch) {
@@ -812,9 +1026,16 @@ function handleLinePatch(linepatch) {
 		lineAmount += linepatch['data'].length
 		$("#lineAmount").html(lineAmount.toString())
 	}
-	canvasUsers[linepatch['owner']]['lines'].push(linepatch['data'])
+	if (!("lineWidth" in linepatch)) {
+		linepatch['lineWidth'] = 10;
+	}
+	if (!("lineColor" in linepatch)) {
+		linepatch['lineColor'] = "#000000";
+	}
 
-	linesHandler(linepatch['data'])
+	canvasUsers[linepatch['owner']]['lines'].push({data:linepatch['data'], lineWidth:linepatch['lineWidth'], lineColor:linepatch['lineColor']})
+	console.log("color of the received line:"+linepatch['lineColor'])
+	linesHandler(linepatch['data'], linepatch['lineWidth'], linepatch['lineColor'])
 }
 
 function User() {

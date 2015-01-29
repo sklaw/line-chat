@@ -28,7 +28,7 @@ class Unbuffered(object):
 
 sys.stdout = Unbuffered(f)
 
-online = []
+
 callbackpool = {}
 
 
@@ -55,7 +55,7 @@ class SignupHandler(BaseHandler):
         dbtalk = yield tornado.gen.Task(users.find_one, {"name":name})
 
         if dbtalk.kwargs['error']:
-            self.write(json.dumps({"result":0, "message": u"注册:find_one:数据库对话出错！我也不知道为什么！不要慌！打电话给我！18814091187"}))
+            self.write(json.dumps({"result":0, "message": u"注册:find_one:数据库对话出错！我也不知道为什么！不"}))
             self.finish()
         
         result = dbtalk.args[0]
@@ -63,7 +63,7 @@ class SignupHandler(BaseHandler):
         if not result:
             dbtalk = yield tornado.gen.Task(users.insert, {"name":name, "password":password})
             if dbtalk.kwargs['error']:
-                self.write(json.dumps({"result":0, "message": u"注册:insert:数据库对话出错！我也不知道为什么！不要慌！打电话给我！18814091187"}))
+                self.write(json.dumps({"result":0, "message": u"注册:insert:数据库对话出错！我也不知道为什么！不"}))
                 self.finish()
             self.set_secure_cookie("username", name)
             self.write(json.dumps({"result":1, "message": u"注册成功"}))
@@ -86,7 +86,7 @@ class LoginHandler(BaseHandler):
         dbtalk = yield tornado.gen.Task(users.find_one, {"name":name, "password":password})
 
         if dbtalk.kwargs['error']:
-            self.write(json.dumps({"result":0, "message": u"登陆:数据库对话出错！我也不知道为什么！不要慌！打电话给我！18814091187"}))
+            self.write(json.dumps({"result":0, "message": u"登陆:数据库对话出错！我也不知道为什么！不"}))
         else:
             result = dbtalk.args[0]
             if result:
@@ -122,12 +122,53 @@ class UserExistHandler(BaseHandler):
 
 
 
+@tornado.web.asynchronous
+@tornado.gen.engine
+def leaveCanvasHandler(self, canvasToLeave):
+
+
+    dbtalk = yield tornado.gen.Task(self.canvaspool.find_one, {"canvasname":canvasToLeave})
+                
+    if dbtalk.kwargs['error']:
+        self.write_message(json.dumps({'data': "shareHandler:leaveCanvasHandler:get info of a canvas:数据库对话出错", 'type': "errormessage"}))
+        self.close()
+        return
+    self.canvasinfo = dbtalk.args[0]
+    if not self.canvasinfo:
+        self.write_message(json.dumps({'data': "this canvas has been deleted. refresh the page please", 'type': "errormessage"}))
+        self.write_message(json.dumps({'data': "gotoslash", 'type': "action"}))
+        return
+
+
+    dbtalk = yield tornado.gen.Task(self.users.find_one, {"name":self.name})
+    if dbtalk.kwargs['error']:
+        self.write_message(json.dumps({'data': "shareHandler:leaveCanvasHandler:get self doc:数据库对话出错", 'type': "errormessage"}))
+        self.close()
+        return
+    
+
+
+    self.doc = dbtalk.args[0]
+
+    if 'lastVisitList' not in self.doc:
+        self.doc['lastVisitList'] = {}
+
+    self.doc['lastVisitList'][canvasToLeave] = time.time()
+
+    dbtalk = yield tornado.gen.Task(self.users.update, {"_id":self.doc['_id']}, self.doc, True)
+    if dbtalk.kwargs['error']:
+        self.write_message(json.dumps({'data': "shareHandler:leaveCanvasHandler:save last visit info to doc:数据库对话出错", 'type': "errormessage"}))
+        self.close()
+
+
+    print self.name+" leaved "+canvasToLeave+" at "+str(self.doc['lastVisitList'][canvasToLeave])
+
 
 
 
 @tornado.web.asynchronous
 @tornado.gen.engine
-def namecookieHandler(self, info, infoParsed):
+def namecookieHandler(self, infoParsed):
     begin = infoParsed['data'].index('"')
     cookie = infoParsed['data'][begin+1:-1]
     name = tornado.web.decode_signed_value(self.application.settings["cookie_secret"], 'username', cookie)
@@ -141,7 +182,7 @@ def namecookieHandler(self, info, infoParsed):
     self.users = self.application.test3.users
     dbtalk = yield tornado.gen.Task(self.users.find_one, {"name":name})
     if dbtalk.kwargs['error']:
-        self.write_message(json.dumps({'data': "shareHandler:on_message:get self doc:数据库对话出错！打电话给我好吗！18814091187", 'type': "errormessage"}))
+        self.write_message(json.dumps({'data': "shareHandler:on_message:get self doc:数据库对话出错", 'type': "errormessage"}))
         self.close()
         return
     
@@ -155,9 +196,10 @@ def namecookieHandler(self, info, infoParsed):
     if name not in callbackpool:
         print name+" come clean!"
         callbackpool[name] = self
-    else:
+    elif callbackpool[name] != self:
         print name+" come dirty! now clear the former login-er."
         callbackpool[name].callback(json.dumps({'data': "closeConnection", 'type': "action"}))
+        callbackpool[name].close()
         callbackpool[name] = self
 
 
@@ -173,7 +215,35 @@ def namecookieHandler(self, info, infoParsed):
     obj = {}
     obj['imin'] = self.doc['canvasimin']
     obj['icreate'] = self.doc['canvasicreate']
-    
+
+    print obj['imin']
+    print obj['icreate']
+
+    if 'lastVisitList' not in self.doc:
+        self.doc['lastVisitList'] = {}
+
+    obj['lastVisitList'] = self.doc['lastVisitList']
+    obj['lastEditedTimeList'] = {}
+
+
+    self.canvaspool = self.application.test3.canvaspool
+    for c in obj['imin']+obj['icreate']:
+        dbtalk = yield tornado.gen.Task(self.canvaspool.find_one, {"canvasname":c})
+        if dbtalk.kwargs['error']:
+            self.write_message(json.dumps({'data': "shareHandler:before sending canvaslist, getting the lastEditedTime:数据库对话出错", 'type': "errormessage"}))
+            self.close()
+            continue
+        
+        result = dbtalk.args[0]
+        if not result:
+            continue
+
+        if 'lastEditedTime' not in result:
+            continue
+
+        obj['lastEditedTimeList'][c] = result['lastEditedTime']
+
+
     self.write_message(json.dumps({'data': obj, 'type':"canvaslist"}))
 
 
@@ -192,16 +262,39 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
         print "wb open:"
         print self.handlerId
 
+    @tornado.web.asynchronous
+    @tornado.gen.engine
     def on_close(self):
-        
-
         print "wb close:"
         if callbackpool[self.name] == self:
             print self.name+" leaved decently"
             del callbackpool[self.name]
         else:
             print self.name+" leaved ugly"
+
+
+
+        if not self.canvasname or self.canvasname == "":
+            return
+
         
+        leaveCanvasHandler(self, self.canvasname)
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @tornado.web.asynchronous
     @tornado.gen.engine
@@ -210,35 +303,47 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
 
         print "on_message----type:"+infoParsed["type"]
         if infoParsed["type"] == "namecookie":
-            namecookieHandler(self, info, infoParsed)
-        elif infoParsed["type"] == "lines":
-            print "received a lines from user:"+self.name+" in canvas:"+self.canvasname
+            namecookieHandler(self, infoParsed)
+        elif infoParsed["type"] == "line":
+            print "received a line from user:"+self.name+" in canvas:"+self.canvasname
 
             #pack the line to linepatch
             linepatch = {}
             linepatch['data'] = infoParsed["data"]
             linepatch['owner'] = self.name
             linepatch['canvasname'] = self.canvasname
+            linepatch['lineColor'] = infoParsed['lineColor']
+            linepatch['lineWidth'] = infoParsed['lineWidth']
+            #print linepatch['lineColor'],linepatch['lineWidth']
 
-
-            self.canvaspool = self.application.test3.canvaspool
+            
             dbtalk = yield tornado.gen.Task(self.canvaspool.find_one, {"canvasname":self.canvasname})
             if dbtalk.kwargs['error']:
-                self.write_message(json.dumps({'data': "shareHandler:on_message:save a linepatch:数据库对话出错！打电话给我好吗！18814091187", 'type': "errormessage"}))
+                self.write_message(json.dumps({'data': "shareHandler:on_message:get canvas info:数据库对话出错", 'type': "errormessage"}))
                 self.close()
                 return
         
-            result = dbtalk.args[0]
-            if not result:
+            self.canvasinfo = dbtalk.args[0]
+            if not self.canvasinfo:
                 self.write_message(json.dumps({'data': "this canvas has been deleted. refresh the page please", 'type': "errormessage"}))
                 self.write_message(json.dumps({'data': "gotoslash", 'type': "action"}))
+                return
+
+            
+            self.canvasinfo['lastEditedTime'] = time.time()
+            print "canvas ",self.canvasname," has been updated at ", self.canvasinfo['lastEditedTime']
+
+            dbtalk = yield tornado.gen.Task(self.canvaspool.update, {"_id":self.canvasinfo["_id"]}, self.canvasinfo, True)
+            if dbtalk.kwargs['error']:
+                self.write_message(json.dumps({'data': "shareHandler:on_message:update a canvas lastEditedTime:数据库对话出错", 'type': "errormessage"}))
+                self.close()
                 return
             #print linepatch
 
             self.linepool = self.application.test3.linepool
             dbtalk = yield tornado.gen.Task(self.linepool.insert, linepatch)
             if dbtalk.kwargs['error']:
-                self.write_message(json.dumps({'data': "shareHandler:on_message:save a linepatch:数据库对话出错！打电话给我好吗！18814091187", 'type': "errormessage"}))
+                self.write_message(json.dumps({'data': "shareHandler:on_message:save a linepatch:数据库对话出错", 'type': "errormessage"}))
                 self.close()
                 return
 
@@ -255,6 +360,9 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
                     if callbackpool[i].canvasname == self.canvasname:
                         print "this linepatch is dispatching to:"+i
                         callbackpool[i].callback(json.dumps({'data':linepatch ,'type':"linepatch"}))
+                    else:
+                        print "turnRed order is dispatching to:"+i
+                        callbackpool[i].callback(json.dumps({'data':self.canvasname ,'type':"turnRed"}))
 
 
 
@@ -264,9 +372,14 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
                 self.linepool = self.application.test3.linepool
                 dbtalk = yield tornado.gen.Task(self.linepool.remove, {"canvasname":self.canvasname, "owner":self.name})
                 if dbtalk.kwargs['error']:
-                    self.write_message(json.dumps({'data': "shareHandler:on_message:cant clear one's lines:数据库对话出错！打电话给我好吗！18814091187", 'type': "errormessage"}))
+                    self.write_message(json.dumps({'data': "shareHandler:on_message:cant clear one's lines:数据库对话出错", 'type': "errormessage"}))
                     self.close()
                     return
+
+                
+
+
+
 
                 peopleToNotify = self.canvasinfo['members'][:]
                 peopleToNotify.append(self.canvasinfo['creator'])
@@ -276,6 +389,13 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
                         if callbackpool[i].canvasname == self.canvasname:
                             print "this clear order is dispatching to:"+i
                             callbackpool[i].callback(json.dumps({'data':self.name ,'type':"clearsomeone"}))
+            elif infoParsed['data'] == 'leavecanvas':
+                leaveCanvasHandler(self, self.canvasname)
+                
+                
+                
+
+
             elif infoParsed['data'] == "deleteCanvas":
                 creator = self.canvasinfo['creator']
                 print self.name+' is trying to delete a canvas named '+self.canvasname+' belonging to '+creator
@@ -322,27 +442,36 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
             self.canvaspool = self.application.test3.canvaspool
             dbtalk = yield tornado.gen.Task(self.canvaspool.find_one, {"canvasname":self.canvasname})
             if dbtalk.kwargs['error']:
-                self.write_message(json.dumps({'data': "shareHandler:on_message:get info of a canvas:数据库对话出错！打电话给我好吗！18814091187", 'type': "errormessage"}))
+                self.write_message(json.dumps({'data': "shareHandler:on_message:get info of a canvas:数据库对话出错", 'type': "errormessage"}))
                 self.close()
                 return
             self.canvasinfo = dbtalk.args[0]
+
+            if not self.canvasinfo:
+                self.write_message(json.dumps({'data': "this canvas has been deleted. refresh the page please", 'type': "errormessage"}))
+                return
+
+
             peopleToNotify = self.canvasinfo['members'][:]
             peopleToNotify.append(self.canvasinfo['creator'])
             print peopleToNotify
             for i in peopleToNotify:
                 if i in callbackpool:
-                    if callbackpool[i].canvasname == "":
-                        print "this canvaslist update order is dispatching to:"+i
-                        callbackpool[i].callback(json.dumps({'data': self.canvasname, 'type':"addcanvasoption"}))
+                    print "this canvaslist update order is dispatching to:"+i
+                    callbackpool[i].callback(json.dumps({'data': {'canvasname':self.canvasname, 'creator':self.canvasinfo['creator']}, 'type':"addcanvasoption"}))
 
         elif infoParsed['type'] == 'entercanvas':
+            if self.canvasname and self.canvasname != "" and self.canvasname!= infoParsed['data']:
+                print "before enter "+infoParsed['data']+", leave "+self.canvasname+" first"
+                leaveCanvasHandler(self, self.canvasname)
+
             self.canvasname = infoParsed['data']
             print self.name+" request canvas : "+ self.canvasname
 
             self.linepool = self.application.test3.linepool
             dbtalk = yield tornado.gen.Task(self.linepool.find, {"canvasname":self.canvasname})
             if dbtalk.kwargs['error']:
-                self.write_message(json.dumps({'data': "shareHandler:on_message:get all lines of a canvas:数据库对话出错！打电话给我好吗！18814091187", 'type': "errormessage"}))
+                self.write_message(json.dumps({'data': "shareHandler:on_message:get all lines of a canvas:数据库对话出错", 'type': "errormessage"}))
                 self.close()
                 return
             linespack = dbtalk.args[0]
@@ -353,7 +482,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
             self.canvaspool = self.application.test3.canvaspool
             dbtalk = yield tornado.gen.Task(self.canvaspool.find_one, {"canvasname":self.canvasname})
             if dbtalk.kwargs['error']:
-                self.write_message(json.dumps({'data': "shareHandler:on_message:get info of a canvas:数据库对话出错！打电话给我好吗！18814091187", 'type': "errormessage"}))
+                self.write_message(json.dumps({'data': "shareHandler:on_message:get info of a canvas:数据库对话出错", 'type': "errormessage"}))
                 self.close()
                 return
             self.canvasinfo = dbtalk.args[0]
@@ -368,6 +497,7 @@ class ShareHandler(tornado.websocket.WebSocketHandler):
                 del i['_id']
 
             self.write_message(json.dumps({'canvasinfo':self.canvasinfo ,'linespack':linespack, 'type':"canvaspack"}))
+        
 
     def callback(self, info):
         self.write_message(info)
@@ -523,8 +653,8 @@ def main(address):
 
 
     http_server = tornado.httpserver.HTTPServer(Application())
-    http_server.listen(8080, address)
-    #http_server.listen(8080)
+    #http_server.listen(8080, address)
+    http_server.listen(8080)
     #tfloat = ioIns.time()
     #tfloat += 3600
     #ioIns.call_at(tfloat, call_back)

@@ -1,13 +1,18 @@
-body {
-	font-size: 30pt;
+* {
+	font-size: 1pt;
 }
 
-input {
-	font-size: 30pt;
+.ctlBannerBlock>div p{
+	position: absolute;
+	left: 30%;
+	top: 30%;
+	font-weight: bold;
 }
 
-button {
-	font-size: 30pt;
+.ctlBannerBlock>div select{
+	position: absolute;
+	left: 30%;
+	top: 50%;
 }
 
 #ctlBanner {
@@ -16,6 +21,37 @@ button {
 	top: 0px;
 	height: 15%;
 	width: 100%;
-	background-color: red;
+	margin: 0;
+	padding: 0;
 }
 
+.ctlBannerBlock {
+	width: 25%;
+	height: 100%;
+	float: left;
+}
+
+.ctlBannerBlock>div {
+	position: absolute;
+	width: 100%;
+	height: 566%;
+}
+
+#penType {
+	background-color: purple;
+}
+
+#colorPan {
+	background-color: yellow;
+}
+
+#widthCtl {
+	background-color: blue;
+}
+
+#drawSwitch {
+	left:75%;
+	width: 100%;
+	position: absolute;
+	background-color: red;
+}
