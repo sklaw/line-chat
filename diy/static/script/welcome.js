@@ -265,6 +265,11 @@ $(document).ready(function() {
 	$("#colorPan select").change(function() {
 		console.log("colorPan select changed")
 		console.log($(this).val())
+		sendsendCon()
+
+		ctx.beginPath()
+		ctx.lineWidth = lineWidth;
+
 		lineColor = $(this).val()
 		ctx.strokeStyle = lineColor
 		$(".ctlBannerBlock>div").hide();
@@ -282,6 +287,11 @@ $(document).ready(function() {
 	$("#widthCtl select").change(function() {
 		console.log("widthCtl select changed")
 		console.log($(this).val())
+		sendsendCon()
+
+		ctx.beginPath()
+		ctx.strokeStyle = lineColor
+
 		lineWidth = parseInt($(this).val())
 		ctx.lineWidth = lineWidth
 		$(".ctlBannerBlock>div").hide();
@@ -291,7 +301,9 @@ $(document).ready(function() {
 	$("#penType select").change(function() {
 		console.log("penType select changed")
 		console.log($(this).val())
-		if ($(this).val() == "毛笔") {
+		sendsendCon()
+
+		if ($(this).val() == "maoBi") {
 			lagF = maoBi
 		}
 		else {
@@ -490,7 +502,6 @@ function bannerPostioning() {
 
 
 	$(".ctlBannerBlock").css("width", window.innerWidth*0.25)
-
 	$("#drawSwitch").css("left", window.innerWidth*0.75+'px')
 		.css("top", 0+'px')
 
