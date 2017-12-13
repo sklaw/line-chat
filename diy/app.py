@@ -650,8 +650,6 @@ class Application(tornado.web.Application):
 
 
 def main(address):
-
-
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(8080, address)
     #http_server.listen(8080)
